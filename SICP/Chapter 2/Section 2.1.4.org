@@ -1,0 +1,272 @@
+#+HTML_LINK_UP: ../../index.html
+#+HTML_LINK_HOME: ../../index.html
+#+TITLE: SICP Section 2.1.4
+2015.07.09
+* Exercise 2.7
+Exercise 2.7 asks us to define selectors ~upper-bound~ and ~lower-bound~:
+
+#+BEGIN_SRC racket
+(define (lower-bound i)
+  (min (car i) (cdr i)))
+(define (upper-bound i)
+  (max (car i) (cdr i)))
+#+END_SRC
+
+With ~min~ and ~max~, you don't need to assume that the upper and lower bounds are ordered. Although perhaps I should have used ~car~, ~cdr~ instead.
+
+* Exercise 2.8
+Now that the selectors and constructors are implemented, we'll define a procedure to subtract intervals:
+
+#+BEGIN_SRC racket
+(define (sub-interval a b)
+  (add-interval a
+                (make-interval (* -1 (lower-bound b))
+                               (* -1 (upper-bound b)))))
+#+END_SRC
+        
+* Exercise 2.9
+Here's the text of Exercise 2.9 from SICP:
+
+#+BEGIN_QUOTE
+The width of an interval is half of the difference between its upper and lower bounds... Show that the width of the sum (or difference) of two intervals is a function only of the widths of the intervals being added (or subtracted). Give examples to show that this is not true for multiplication or division.
+#+END_QUOTE
+
+Let's rearrange the ~width-interval~ expression a little:
+
+#+BEGIN_SRC racket
+1 (width-interval (add-interval (make-interval a b)
+2                               (make-interval c d)))
+
+1 (width-interval (make-interval (+ a c) (+ b d)))
+
+1 (/ (- (+ b d)
+2       (+ a c))
+3    2)
+
+1 (/ (+ b d (- a) (- c))
+2    2)
+
+1 (/ (+ (- b a)
+2       (- d c))
+3    2)
+
+1 (+ (/ (- b a) 2)
+2    (/ (- d c) 2))
+#+END_SRC
+
+But! This is the sum of the widths of the addends. Therefore, the width of the sum is a function of the widths of the original addends.
+
+Not so for multiplication:
+
+#+BEGIN_SRC racket
+(width-interval (mul-interval (make-interval 1 2)
+                              (make-interval 3 4))) -> 5/2
+(width-interval (mul-interval (make-interval 1 2)
+                              (make-interval 2 3))) -> 5 
+#+END_SRC
+
+Above, the width of the factors is consistent (always equal to 1, in this case), but the widths of the products are not. Therefore, we cannot say that the width of the product is a function of the widths of the factors. The same can be said for division - especially in this implementation, where division is explicitly defined as a function of multiplication.
+
+* Exercise 2.10
+We can refine the ~div-interval~ procedure so it throws an error (sort of) when fed 0 as a denominator:
+
+#+BEGIN_SRC racket
+(define (div-interval-2 x y)
+  (if (or (= (width-interval x) 0)
+          (= (width-interval y) 0))
+      (display "Error: divide by zero")
+      (mul-interval x
+                    (make-interval (/ 1.0 (upper-bound y))
+                                   (/ 1.0 (lower-bound y))))))
+#+END_SRC
+        
+* Exercise 2.11
+This was fun! Here's the prompt from the textbook:
+
+#+BEGIN_QUOTE
+In passing, Ben also cryptically comments: 'By testing the signs of the endpoints of the intervals, it is possible to break ~mul-interval~ into nine cases, only one of which requires more than two multiplications.' Rewrite this procedure using Ben's suggestion. 
+#+END_QUOTE
+
+#+BEGIN_SRC racket
+(define (mul-interval-2 x y)
+  (let ((a (lower-bound x))
+        (b (upper-bound x))
+        (c (lower-bound y))
+        (d (upper-bound y))
+        (a-neg (negative? (lower-bound x)))
+        (b-neg (negative? (upper-bound x)))
+        (c-neg (negative? (lower-bound y)))
+        (d-neg (negative? (upper-bound y))))
+    (cond ((and (not a-neg) (not b-neg) (not c-neg) (not d-neg))
+           (make-interval (* a c) (* b d)))
+          ((and a-neg (not b-neg) (not c-neg) (not d-neg))
+           (make-interval (* a d) (* b d)))
+          ((and (not a-neg) (not b-neg) c-neg (not d-neg))
+           (make-interval (* b c) (* b d)))
+          ((and a-neg b-neg (not c-neg) (not d-neg))
+           (make-interval (* a d) (* b c)))
+          ((and a-neg (not b-neg) c-neg (not d-neg))
+           (make-interval (min (* a d) (* b c)) (max (* a c) (* b d))))
+          ((and (not a-neg) (not b-neg) c-neg d-neg)
+           (make-interval (* b c) (* a d)))
+          ((and a-neg b-neg c-neg (not d-neg))
+           (make-interval (* a d) (* a c)))
+          ((and a-neg (not b-neg) c-neg d-neg)
+           (make-interval (* b c) (* a c)))
+          ((and a-neg b-neg c-neg d-neg)
+           (make-interval (* b c) (* a c))))))
+#+END_SRC
+        
+* Exercise 2.12
+From the book:
+
+#+BEGIN_QUOTE
+Define a constructor make-center-percent that takes a center and a percentage tolerance and produces the desired interval. You must also define a selector percent that produces the percentage tolerance for a given interval. The center selector is the same as the one shown above. 
+#+END_QUOTE
+
+My answer, including center from the book:
+
+#+BEGIN_SRC racket
+(define (center i)
+  (/ (+ (lower-bound i) (upper-bound i)) 2))
+
+(define (make-center-percent c p)
+  (make-interval (- c (* c p))
+                 (+ c (* c p))))
+(define (percent i)
+  (/ (width-interval i)
+     (center i)))
+#+END_SRC
+
+* Exercise 2.13
+Here's the problem:
+
+#+BEGIN_QUOTE
+Show that under the assumption of small percentage tolerances there is a simple formula for the approximate percentage tolerance of the product of two intervals in terms of the tolerances of the factors. You may simplify the problem by assuming that all numbers are positive. 
+#+END_QUOTE
+
+My code below. If I rewrote this, I might put ~if-consequent~ into ~let~ instead of ~define~.
+
+#+BEGIN_SRC racket
+(define (exercise2.13 factor-a-center
+                      factor-b-center
+                      factor-a-percent
+                      factor-b-percent
+                      percent-step-size
+                      test-count)
+  (define (iter factor-a-percent factor-b-percent counter bound)
+    (if (> counter bound) (if-consequent)
+        (if-alternative factor-a-percent factor-b-percent counter bound)))
+  (define (if-consequent)
+    (display "\n\n*** tests complete ***"))
+  (define (if-alternative factor-a-percent factor-b-percent counter bound)
+    (display "\n\ntest number ")
+    (display counter)
+    (display "\n  factor a percent: ")
+    (display factor-a-percent)
+    (display "\n  factor b percent: ")
+    (display factor-b-percent)
+    (display "\n  product percent:  ")
+    (display (percent (mul-interval (make-center-percent factor-a-center
+                                                         factor-a-percent)
+                                    (make-center-percent factor-b-center
+                                                         factor-b-percent))))
+    (display "\n  margin of error:  ")
+    (display (- (+ factor-a-percent factor-b-percent)
+                (percent (mul-interval (make-center-percent factor-a-center
+                                                            factor-a-percent)
+                                       (make-center-percent factor-b-center
+                                                            factor-b-percent)))))
+    (iter (+ factor-a-percent percent-step-size)
+          (+ factor-b-percent percent-step-size)
+          (+ counter 1)
+          bound))
+  (iter factor-a-percent factor-b-percent 1 test-count))
+#+END_SRC
+
+And here is the output. The margin of error is quite small:
+
+#+BEGIN_SRC racket
+test number 1
+  factor a percent: 0.01
+  factor b percent: 0.02
+  product percent:  0.029994001199759975
+  margin of error:  5.998800240023666e-06
+
+test number 2
+  factor a percent: 0.02
+  factor b percent: 0.03
+  product percent:  0.04997001798920647
+  margin of error:  2.9982010793530578e-05
+
+test number 3
+  factor a percent: 0.03
+  factor b percent: 0.04
+  product percent:  0.06991610067918505
+  margin of error:  8.389932081495632e-05
+#+END_SRC
+        
+* Exercise 2.14
+We're given two algebraically equivalent functions that nevertheless produce different results. We're asked to demonstrate the inconsistency.
+
+Here are the two functions:
+
+#+BEGIN_SRC racket
+(define (par1 r1 r2)
+  (div-interval (mul-interval r1 r2)
+                (add-interval r1 r2)))
+(define (par2 r1 r2)
+  (let ((one (make-interval 1 1)))
+    (div-interval one
+                  (add-interval (div-interval one r1)
+                                (div-interval one r2)))))
+#+END_SRC
+
+And here's my function to test them:
+
+#+BEGIN_SRC racket
+(define (exercise2.14 counter limit
+                      center1 percent1 step-size1
+                      center2 percent2 step-size2)
+  (define (consequent counter limit)
+    (let ((par1-calc (par1 (make-center-percent center1 percent1)
+                           (make-center-percent center2 percent2)))
+          (par2-calc (par2 (make-center-percent center1 percent1)
+                           (make-center-percent center2 percent2))))
+      (printf "\ntest ~s\n" (+ counter 1))
+      (printf "     r1 percent: ~s\n" percent1)
+      (printf "     r2 percent: ~s\n" percent2)
+      (printf "     par1 calc:  ~s\n" par1-calc)
+      (printf "     par2 calc:  ~s\n" par2-calc)
+      (printf "     error:      ~s\n"
+              (sub-interval par1-calc par2-calc))
+      (exercise2.14 (+ counter 1) limit
+                    center1 (+ percent1 step-size1) step-size1
+                    center2 (+ percent2 step-size2) step-size2)))
+  (cond ((< counter limit) (consequent counter limit))))
+#+END_SRC
+        
+Here are some of the results, which demonstrate that ~par1~, ~par2~ are not equivalent in practice.
+
+#+BEGIN_SRC racket
+test 1
+     r1 percent: 0.01
+     r2 percent: 0.02
+     par1 calc:  (3.1809836065573776 . 3.4922033898305083)
+     par2 calc:  (3.2888135593220342 . 3.3777049180327863)
+     error:      (-0.19672131147540872 . 0.20338983050847403)
+
+test 2
+     r1 percent: 0.011
+     r2 percent: 0.021
+     par1 calc:  (3.171408450704225 . 3.5026501526976586)
+     par2 calc:  (3.285480149304377 . 3.381038322961022)
+     error:      (-0.20962987225679708 . 0.21717000339328152)
+
+test 3
+     r1 percent: 0.012
+     r2 percent: 0.022000000000000002
+     par1 calc:  (3.1618586387434555 . 3.5131250000000005)
+     par2 calc:  (3.2821467391304346 . 3.384371727748691)
+     error:      (-0.22251308900523536 . 0.23097826086956585)
+#+END_SRC

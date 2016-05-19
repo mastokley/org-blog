@@ -1,0 +1,13 @@
+#+OPTIONS: toc:nil
+#+HTML_LINK_UP: ../index.html
+#+HTML_LINK_HOME: ../index.html
+#+TITLE: Tuck and Robin Lakes
+2015.10.22
+
+During the day, goats lounged on the snow fields that fed this lake:
+
+[[file:../img/TuckandRobinLakes/glaciallake.jpg]]
+
+Lots of foreground here - not sure if I pulled it off.
+
+[[file:../img/TuckandRobinLakes/meadowandsunset.jpg]]

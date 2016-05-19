@@ -1,0 +1,86 @@
+#+HTML_LINK_UP: ../../index.html
+#+HTML_LINK_HOME: ../../index.html
+#+TITLE: SICP Section 1.3.3
+* Exercise 1.35
+Here's the second half of the question, at any rate:
+#+BEGIN_SRC racket
+(define golden-ratio
+  (fixed-point (λ (x) (+ 1 (/ 1 x)))
+               1.0))
+#+END_SRC
+* Exercise 1.36
+#+BEGIN_SRC racket
+(define (fixed-point-2 f first-guess)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  (define (try guess)
+    (let ((next (f guess)))
+      (display guess)
+      (newline)
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try first-guess))
+
+(fixed-point-2 (λ (x)
+                 (average x
+                          (/ (log 1000)
+                             (log x))))
+               2.0)
+
+; Here's the output:
+2.0
+5.9828921423310435
+4.922168721308343
+4.628224318195455
+4.568346513136242
+4.5577305909237005
+4.555909809045131
+4.555599411610624
+4.5555465521473675
+4.555537551999825
+#+END_SRC
+* Exercise 1.37
+** Part A
+#+BEGIN_SRC racket
+(define (cont-frac n d k)
+  (define (helper i)
+    (/ (n i)
+       (+ (d i)
+          (cond ((not (< k i))
+                 (helper (+ i 1)))
+                ((< k i)
+                 0)
+                ))))
+  (helper 1))
+#+END_SRC
+** Part B
+#+BEGIN_SRC racket
+(define (cont-frac-iter n d k)
+  (define (iter i sum)
+    (if (= i 0)
+        sum
+        (iter (- i 1)
+              (/ (n i) (+ (d i) sum)))))
+  (iter (- k 1)
+        (/ (n k) (d k))))
+#+END_SRC
+* Exercise 1.38
+#+BEGIN_SRC racket
+(define euler-cont-frac
+  (+ 2 (cont-frac (λ (i) 1.0)
+                  (λ (i)
+                    (cond ((= (modulo (+ i 1) 3) 0)
+                           (* (+ i 1) (/ 2 3)))
+                          (else
+                           1)))
+                  10)))
+#+END_SRC
+* Exercise 1.39
+#+BEGIN_SRC racket
+(define (tan-cf x k)
+  (define (n k)
+    (if (= k 1.0) x (- (square x))))
+  (define (d k) (- (* k 2.0) 1.0))
+  (cont-frac n d k))
+#+END_SRC

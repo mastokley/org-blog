@@ -1,0 +1,24 @@
+#+OPTIONS: toc:nil
+#+HTML_LINK_UP: ../index.html
+#+HTML_LINK_HOME: ../index.html
+#+TITLE: Freezer Burritos
+2016.03.08
+
+* Ingredients
+
+- 1.5 - 3 lb pork
+- 3 cups dried black beans, cooked
+- 2 cups brown rice, cooked
+- 2 big bunches cilantro, shredded
+- 4 - 5 onions
+- 6 green bell peppers
+- 16 oz cheese, shredded
+- [[file:Salsa%20Ranchera.org][salsa ranchera]] 
+- 15 big white flour tortillas
+
+* Directions
+
+1. Roast pork with salt at 450\deg (optionally, braise it)
+2. Chop onions coarsely, toss in oil, and roast until soft
+3. Chop bell peppers coarsely, toss in oil, and roast until soft
+4. Assemble, wrap in foil, freeze

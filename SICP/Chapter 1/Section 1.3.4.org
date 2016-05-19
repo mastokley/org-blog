@@ -1,0 +1,69 @@
+#+HTML_LINK_UP: ../../index.html
+#+HTML_LINK_HOME: ../../index.html
+#+TITLE: SICP Section 1.3.4
+* Exercise 1.40 
+#+BEGIN_SRC racket
+(define (cubic a b c)
+  (λ (x) (+ (cube x)
+                 (* a (square x))
+                 (* b x)
+                 c)))
+#+END_SRC
+* Exercise 1.41
+#+BEGIN_SRC racket
+(define (double f) (λ (x) (f (f x))))
+#+END_SRC
+* Exercise 1.42
+#+BEGIN_SRC racket
+(define (compose f g) (λ (x) (f (g x))))
+#+END_SRC
+* Exercise 1.43
+#+BEGIN_SRC racket
+(define (repeated f n)
+  (if (= n 1)
+      f
+      (compose f (repeated f (- n 1)))))
+#+END_SRC
+* Exercise 1.44
+#+BEGIN_SRC racket
+(define (smooth f)
+  (define dx .00001)
+  (λ (x)
+    (/ (+ (f (- x dx))
+          (f x)
+          (f (+ x dx)))
+       3)))
+
+(define (n-fold-smooth f n)
+  (repeated (smooth f) n))
+#+END_SRC
+* Exercise 1.45
+#+BEGIN_SRC racket
+(define (log2 x)
+  (/ (log x) (log 2)))
+
+(define (nth-root x n)
+  (fixed-point (repeated (average-damp (λ (y) (/ x (expt y (- n 1)))))
+                         (log2 n))
+               1.0))
+#+END_SRC
+* Exercise 1.46
+#+BEGIN_SRC racket
+(define (iterative-improve good-enough? improve-guess)
+  (λ (guess)
+    (if (good-enough? guess)
+        guess
+        ((iterative-improve good-enough? improve-guess) (improve-guess guess)))))
+
+(define (sqrt x)
+  (define (good-enough? guess) (< (abs (- (square guess) x)) .001))
+  (define (improve-guess guess) (average guess (/ x guess)))
+  (define (average x y) (/ (+ x y) 2))
+  ((iterative-improve good-enough? improve-guess) 5.0))
+
+(define (fixed-point f first-guess)
+  (define (good-enough? guess) (< (abs (- guess (f guess)) tolerance)))
+  (define tolerance .00001)
+  (define (improve-guess guess) (f guess))
+  ((iterative-improve good-enough? improve-guess) first-guess))
+#+END_SRC

@@ -1,0 +1,19 @@
+#+OPTIONS: toc:nil
+#+HTML_LINK_UP: ../index.html
+#+HTML_LINK_HOME: ../index.html
+#+TITLE: Sahale Arm
+2015.10.22
+
+Katherine and I spent the night up on Sahale Glacier in August, 2015.
+
+View from camp at sunset:
+
+[[file:../img/SahaleArm/tentandsunset.jpg]]
+
+Making coffee the next morning:
+
+[[file:../img/SahaleArm/makingcoffee.jpg]]
+
+Katherine looks back at Sahale Glacier as we descend:
+
+[[file:../img/SahaleArm/katherineviewssahale.jpg]]

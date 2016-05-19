@@ -1,0 +1,26 @@
+#+OPTIONS: toc:nil
+#+HTML_LINK_UP: ../index.html
+#+HTML_LINK_HOME: ../index.html
+#+TITLE: Salsa Ranchera
+2015.10.22
+
+Adapted from Diana Kennedy's recipe in /The Essential Cuisines of Mexico/.
+
+* Ingredients
+
+- 2 or 3 big cans (28 oz.) of diced tomatoes
+- a head of garlic cloves, peeled
+- 2 T vegetable oil
+- 2 or 3 handfuls hot green chiles, such as serrano, jalapeno, or poblano
+- 1 finely diced white onion
+- salt
+
+* Directions
+
+1. Broil the tomatoes to blacken the surface somewhat
+2. De-stem and char the green chiles, whole - you can do this as aggresively as you like
+3. Saute the diced onion in the oil, gently, until translucent
+4. Blend the garlic cloves with the green chiles until smooth
+5. Combine all and simmer to reduce
+6. Season to taste
+

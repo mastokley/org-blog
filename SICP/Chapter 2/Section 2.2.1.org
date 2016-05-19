@@ -1,0 +1,125 @@
+#+HTML_LINK_UP: ../../index.html
+#+HTML_LINK_HOME: ../../index.html
+#+TITLE: SICP Section 2.2.1
+2015.11.21
+* Exercise 2.17
+This exercise is a kind of reverse ~car~. It should return the last element of the list, instead of the first. At first, I returned ~l~ instead of ~(car l)~, forgetting that ~cdr~ always returns a list.
+
+#+BEGIN_SRC racket
+(define (last-pair l)
+  (if (null? (cdr l))
+      (car l)
+      (last-pair (cdr l))))
+#+END_SRC 
+
+* Exercise 2.18
+Here we're asked to reverse the order of a list. You could use two lists and move one element from one to the other, but this method is cleverer and recursiver:
+
+#+BEGIN_SRC racket
+(define (reverse l)
+  (if (null? l)
+      l
+      (append (reverse (cdr l)) (list (car l)))))
+#+END_SRC        
+
+* Exercise 2.19
+Since this next exercise is more involved, I'll quote the textbook:
+
+#+BEGIN_QUOTE
+Consider the change-counting program of section 1.2.2. It would be nice to be able to easily change the currency used by the program, so that we could compute the number of ways to change a British pound, for example... To do this will require changing the program ~cc~ somewhat. It will still have the same form, but it will access its second argument differently, as follows:
+
+#+BEGIN_SRC racket
+(define (cc amount coin-values)
+  (cond ((= amount 0) 1)
+        ((or (< amount 0) (no-more? coin-values)) 0)
+        (else
+         (+ (cc amount
+                (except-first-denomination coin-values))
+            (cc (- amount
+                   (first-denomination coin-values))
+                coin-values)))))
+
+(define us-coins (list 50 25 10 5 1))
+(define uk-coins (list 100 50 20 10 5 2 1 0.5))
+#+END_SRC
+
+Define the procedures ~first-denomination~, ~except-first-denomination~, and ~no-more?~ in terms of primitive operations on list structures.
+#+END_QUOTE
+
+My answer:
+
+#+BEGIN_SRC racket
+(define (first-denomination l) (car l))
+(define (except-first-denomination l) (cdr l))
+(define (no-more? l) (null? l))
+#+END_SRC
+
+* Exercise 2.20
+Using dotted-tail notation, write a procedure that returns a list whose elements have the same odd-even parity as the x parameter.
+
+#+BEGIN_SRC racket
+(define (same-parity x . y)
+  (let ([parity-test (if (even? x)
+                         (λ (n) (even? n))
+                         (λ (n) (odd? n)))])
+    (define (helper input output)
+      (if (null? input)
+          output
+          (helper (cdr input)
+                  (if (parity-test (car input))
+                      (append output (list (car input)))
+                      output))))
+    (helper (append (list x) y) '())))
+#+END_SRC
+
+* Exercise 2.21
+In this exercise, we use the ~map~ procedure for the first time.
+
+#+BEGIN_SRC racket
+(define (square-list-1 items)
+  (if (null? items)
+      null
+      (cons (square (car items)) (square-list-1 (cdr items)))))
+(define (square-list-2 items)
+  (map square items))
+#+END_SRC
+
+* Exercise 2.22
+In exercise 2.22, we're asked to explain why the function below returns the squared list in reversed order. Looks like it's because it cons-es each squared element to the front of the output list, as it moves from front to back of the input list.
+
+#+BEGIN_SRC racket
+(define (square-list-3 items)
+  (define (iter things answer)
+    (if (null? things)
+        answer
+        (iter (cdr things)
+              (cons (square (car things))
+                    answer))))
+  (iter items null))
+#+END_SRC
+
+But we can't simply switch the arguments of ~cons~, either. The function below returns nested pairs. This is because ~cons~ does not treat its two arguments interchangeably, for the same reason that ~car~ and ~cdr~ cannot be interchanged. ~Car~ returns the first element of a list; ~cdr~ returns the remaining elements, as a list. If you pass a list to ~cons~ as the first argument, it will be treated as a single element in the returned list such that it can be selected back out as a single element by ~car~. On the other hand, if you pass a list to ~cons~ as the second argument, it will be treated as a list such that it can be selected as a list by ~cdr~.
+
+#+BEGIN_SRC racket
+(define (square-list-4 items)
+  (define (iter things answer)
+    (if (null? things)
+        answer
+        (iter (cdr things)
+              (cons answer
+                    (square (car things))))))
+  (iter items null))
+#+END_SRC
+        
+* Exercise 2.23
+Write an implementation of the ~map~ variant ~for-each~. I'm trying to observe the first commandment from /The Little Schemer/:
+#+BEGIN_QUOTE
+When recurring on a list of atoms, /lat/, ask two questions about it: /(null? lat)/ and *else*...
+#+END_QUOTE
+
+#+BEGIN_SRC racket
+(define (for-each proc l)
+  (cond ((null? l) null)
+        (else (proc (car l))
+              (for-each proc (cdr l)))))
+#+END_SRC

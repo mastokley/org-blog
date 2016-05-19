@@ -1,0 +1,183 @@
+#+HTML_LINK_UP: ../../index.html
+#+HTML_LINK_HOME: ../../index.html
+#+TITLE: SICP Section 2.1.3
+* Exercise 2.4
+2015.07.09
+ 
+We're given "an alternative procedural representation of pairs":
+
+#+BEGIN_SRC racket
+(define (cons x y)
+  (λ (m) (m x y)))
+
+(define (car z)
+  (z (λ (p q) p)))
+#+END_SRC
+
+This version of ~cons~ doesn't return data, it returns a procedure. (I wonder if this is intended to continue to blur the distinction between 'procedures' and 'data'.) The procedural version of ~car~ treats the parameter z like a function (and gives it another function on which to operate).
+
+Taken individually, these functions are more or less obscure. I found it helpful to consider them together. Let's show the evaluation of (car (cons 1 2)), step by step:
+
+#+BEGIN_SRC racket
+(car (cons 1 2)) ->
+(car (λ (m) (m 1 2))) ->
+((λ (m) (m 1 2)) ((λ (p q) q)))
+#+END_SRC
+
+Above, the first anonymous function takes one parameter, m. It then applies that parameter as a function (or operator?) to 1 and 2. In this case, that parameter is given as the second anonymous function.
+
+#+BEGIN_SRC racket
+((λ (p q) q) 1 2) ->
+1
+#+END_SRC
+            
+Just what we'd expect. ~cons~ returns a pair and ~car~ returns the head of a pair.
+
+At any rate, we're asked to provide the procedural representation of ~cdr~.
+
+#+BEGIN_SRC racket
+(define (cdr z)
+  (z (λ (p q) q)))
+#+END_SRC
+
+It's a copy of the alternative definition of ~car~ but it returns the tail instead of the head.
+
+* Exercise 2.5
+2015.07.09
+
+#+BEGIN_QUOTE
+"Show that we can represent pairs of nonnegative integers using only numbers and arithmetic operations if we represent the pair a and b as the integer that is the product 2^a 3^b. Give the corresponding definitions of the procedures cons, car, and cdr."
+#+END_QUOTE
+
+The first part, ~cons~, is pretty straightforward. We're defining a pair as the product of 2a and 3b.
+
+#+BEGIN_SRC racket
+(define (cons-expt-alt a b)
+  (* (expt 2 a)
+     (expt 3 b)))
+#+END_SRC
+
+Having constructed a pair, we can get the factors back out again by repeatedly dividing by 2 or 3:
+
+#+BEGIN_SRC racket
+(define (car-expt-alt z)
+  (define (iter n a-count)
+    (cond ((= (modulo n 3) 0) (iter (/ n 3) a-count))
+          ((= (modulo n 2) 0) (iter (/ n 2) (+ a-count 1)))
+          (else a-count)))
+  (iter z 0))
+
+(define (cdr-expt-alt z)
+  (define (iter n b-count)
+    (cond ((= (modulo n 2) 0) (iter (/ n 2) b-count))
+          ((= (modulo n 3) 0) (iter (/ n 3) (+ b-count 1)))
+          (else b-count)))
+  (iter z 0))
+#+END_SRC
+
+* Exercise 2.6
+2015.07.09
+
+This exercise was tremendously difficult. Furthermore, its difficulty is entirely out of scale with the exercises that come before and after it.
+
+Prompt from textbook:
+
+#+BEGIN_QUOTE
+In case representing pairs as procedures wasn't mind-boggling enough, consider that, in a language that can manipulate procedures, we can get by without numbers (at least insofar as nonnegative integers are concerned) by implementing 0 and the operation of adding 1 as
+
+#+BEGIN_SRC racket
+(define zero (λ (f) (λ (x) x)))
+
+(define (add-1 n)
+  (λ (f) (λ (x) (f ((n f) x)))))
+#+END_SRC
+
+This representation is known as Church numerals, after its inventor, Alonzo Church, the logician who invented the λ calculus.
+
+Define ~one~ and ~two~ directly (not in terms of ~zero~ and ~add-1~). (Hint: Use substitution to evaluate ~(add-1 zero)~). Give a direct definition of the addition procedure + (not in terms of repeated application of ~add-1~). 
+#+END_QUOTE
+
+Let's start by defining ~one~ as ~(add-1 zero)~ and then substituting:
+
+#+BEGIN_SRC racket
+1 (define one add-1 zero)
+
+1 (define one
+2  (λ (f)
+3    (λ (x)
+4     (f ((n f) x))))
+5  (λ (f)
+6    (λ (x)
+7      x)))
+#+END_SRC
+ 
+Parameter ~n~ in line 4 is given as lines 5 - 7 (~zero~). Substituting, we get:
+
+#+BEGIN_SRC racket
+1 (define one
+2   (λ (f)
+3      (λ (x)
+4        (f
+5         (((λ (f)
+6             (λ (x) x)) f) x)))))
+#+END_SRC
+
+We can also simplify lines 5 and 6. Line 5 says: given ~f~, return ~(lambda (x) x)~. But we are given ~f~ on line 6 (the fact that they are both literally '~f~' is a coincidence, I think). So:
+
+#+BEGIN_SRC racket
+1 (define one
+2   (λ (f)
+3     (λ (x)
+4       (f
+5        ((λ (x) x)) x))))
+#+END_SRC
+ 
+To repeat the last step: on line 5, we're given the parameter that the lambda function is requesting. So instead of ~((λ (x) x) x)~, we can simply write ~x~.
+
+#+BEGIN_SRC racket
+(define one
+  (λ (f)
+    (λ (x)
+      (f x))))
+#+END_SRC
+ 
+We can define ~two~ in the same way, as ~(add-1 one)~.
+
+#+BEGIN_SRC racket
+(define two
+  (add-1 one))
+
+(define two
+  (λ (f)
+    (λ (x)
+      (f
+       (((λ (f)
+           (λ (x)
+             (f x))) f) x)))))
+
+(define two
+  (λ (f)
+    (λ (x)
+      (f (f x)))))
+#+END_SRC
+ 
+Now we're asked to define the addition procedure directly. Let's start by comparing the definitions of ~zero~, ~one~, and ~two~:
+
+#+BEGIN_SRC racket
+(define zero (λ (f) (λ (x) x)))
+
+(define one (λ (f) (λ (x) (f x))))
+
+(define two (λ (f) (λ (x) (f (f x)))))
+#+END_SRC
+ 
+To add ~m~, we wrap that innermost ~x~ in ~m f~ function calls. Here's a more general version of ~add-1~:
+
+#+BEGIN_SRC racket
+(define (add-m m n)
+  (λ (f) (λ (x) ((m f) ((n f) x)))))
+#+END_SRC
+
+I have to confess, I did not come up with this addition procedure on my own. It's from Bill the Lizard's excellent SICP Challenge. I banged my head against this for days and days. I came back to it about a month later, and discovered I could simplify the nested lambdas in the first part all of a sudden. Maybe I'll come back next month and discover why Bill's ~(m f)~ works the way it does - or even /that/ it works the way it does.
+
+At any rate, I'm content to leave it for now. I'm a big believer in the idea that a lot of these abstract problems simply don't yield to brute force attacks. For me, it often works to encounter the problem and then move on, taking it on faith that a better understanding will emerge later - often, more context can be the key to this.

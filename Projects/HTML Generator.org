@@ -1,0 +1,199 @@
+#+OPTIONS: toc:nil
+#+HTML_LINK_UP: ../index.html
+#+HTML_LINK_HOME: ../index.html
+#+TITLE: HTML Generator 
+2015.12.10
+
+Use the fields below to generate HTML using a more concise syntax.
+
+The syntax I chose is loosely based on [[http://docs.racket-lang.org/scribble/][Scribble]]. Here's the format:
+
+~@tagname.class#id{content}~
+
+For example, write
+
+~@html.class1 class2{@head#id3{@title{Title}}@body{@h1{Heading}@p{Paragraph}}}~
+
+to generate
+
+#+begin_html
+<pre><blockquote><code>&lt;html class="class1 class2"&gt;
+&nbsp;&nbsp;&lt;head id="id3"&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Title
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;&#47;title&gt;
+&nbsp;&nbsp;&lt;&#47;head&gt;
+&nbsp;&nbsp;&lt;body&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Heading
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;&#47;h1&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Paragraph
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;&#47;p&gt;
+&nbsp;&nbsp;&lt;&#47;body&gt;
+&lt;&#47;html&gt;</code></blockquote></pre>
+
+<textarea id="html-input" name="html-input" cols="40" rows="8">Input</textarea>
+<p><button id="html-transform-trigger">Generate HTML</button></p>
+<textarea id="html-output" name="html-output" cols="40" rows="8">Output</textarea>
+#+end_html
+
+A couple notes:
+
+- the characters ~@~, ~<~, ~>~, ~{~, and ~}~ cannot be escaped
+- the characters ~#~ and ~.~ are considered attribute signals only when between ~@~ and ~{~
+- some input validation exists, but is not complete
+- nested tags work, e. g. ~@p{Of @em{Mice} and Men}~
+- pretty printing /almost/ works - innermost contents are on their own line, perhaps unnecessarily
+- newlines in input do interfere with the pretty printing - looks like I'd want to strip them out
+
+The first tricky part was handling nested tags. My first instinct was to write a recursive solution... too much SICP on the brain. Instead, I used an array that grows and shrinks as tags are opened and closed. You also need to use a 'last in, first out' approach. It takes me right back to playing MTG in middle school! I have to assume Richard Garfield had a background in programming - where else would that mechanic have come from?
+
+The second tricky part was implementing the line breaks and the indentations. It took longer than I expected. I think I know why - I never clearly defined a "place an opening tag" function. I kept thinking of the problem in terms of "place an opening tag", but I could not easily identify that event in the code.
+
+If I were going to redo it, I'd try and make better use of the 'wishful thinking' strategy. I'd say, first we place the opening tag (which may or may not involve placing attributes), then we place the content, then we place the closing tag... all before actually implementing those sub-functions. After defining those events, it would become be easier to implement a rule such as "after we place a opening tag, place a newline".
+
+But, all that aside - here's the JavaScript I wrote:
+
+#+BEGIN_SRC javascript
+var elTrigger = document.getElementById('html-transform-trigger');
+elTrigger.addEventListener('click', function() {
+    main(document.getElementById('html-input').value);
+}, false);
+
+// checks bracket, tag balance
+function validate(str) {
+    var tagCount = 0;
+    var openCount = 0;
+    var closeCount = 0;
+    if (str.length > 0) {
+        for (var i = 0; i < str.length; i++) {
+            switch (str[i]) {
+            case '{':
+                openCount += 1;
+                break;
+            case '}':
+                closeCount += 1;
+                break;
+            case '@':
+                tagCount += 1;
+                break;
+            default:
+                // do nothing
+                break;
+            }
+        }
+    }
+    return (openCount === closeCount &&
+            openCount > 0 &&
+            openCount === tagCount &&
+            str[0] === '@');
+}
+
+// parse input and return HTML code, with formatting
+function transform(str) {
+    var output = '';
+    var attribCloser = '';
+    var htmlTags = [];
+    var buildingTag = false;
+    var buildingAttrib = false;
+    var indentLvl = 0;
+    var justIndented = false;
+    function openAttrib(attribName) {
+        output += ' ' + attribName + '="';
+        attribCloser = '"';
+    }
+    function closeAttrib() {
+        output += attribCloser;
+        attribCloser = '';
+    }
+    function openTag() {
+        if (buildingTag) {
+            output += htmlTags[htmlTags.length - 1];
+        }
+        buildingTag = false;
+    }
+    function closeTag() {
+        indentLvl -= 1;
+        indent();
+        output += '';
+        indent();
+        justIndented = false;
+    }
+    // Indents and inserts newlines
+    function indent() {
+        if (!justIndented) {
+            output += '\n';
+            for (var j = 0; j < indentLvl; j++) {
+                output += '  ';
+            }
+            justIndented = true;
+        }
+    }
+    for (var i = 0; i < str.length; i++) {
+        switch (str[i]) {
+        case '@':
+            if (i !== 0) {
+                indent();
+                justIndented = false;
+            }
+            buildingAttrib = true;
+            htmlTags.push('');
+            buildingTag = true;
+            output += '<';
+            break;
+        case '.':
+            if (buildingAttrib) {
+                openTag();
+                closeAttrib();
+                openAttrib('class');
+            } else {
+                output += str[i];
+            }
+            break;
+        case '#':
+            if (buildingAttrib) {
+                openTag();
+                closeAttrib();
+                openAttrib('id');
+            } else {
+                output += str[i];
+            }
+            break;
+        case '{':
+            buildingAttrib = false;
+            openTag();
+            closeAttrib();
+            output += '>';
+            indentLvl += 1;
+            indent();
+            break;
+        case '}':
+            closeTag();
+            break;
+        default:
+            if (buildingTag) {
+                htmlTags[htmlTags.length - 1] += str[i];
+            } else {
+                output += str[i];
+                justIndented = false;
+            }
+            break;
+        }
+    }
+    return output;
+}
+
+function main(str) {
+    if (validate(str)) {
+        str = transform(str);
+    } else {
+        str = "Invalid input";
+    }
+    document.getElementById('html-output').textContent = str;
+}
+#+END_SRC
+
+#+begin_html
+<script src="../js/html-generator.js"></script>
+#+end_html

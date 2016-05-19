@@ -1,0 +1,22 @@
+#+OPTIONS: toc:nil
+#+HTML_LINK_UP: ../index.html
+#+HTML_LINK_HOME: ../index.html
+#+TITLE: No Work Bread
+2016.02.14
+
+Adapted from Jim Lahey's recipe.
+
+* Ingredients
+
+- 300 - 500 g flour, at least half white
+- 75 - 80% hydration
+- 1.8% salt
+- 1/4 - 1/2 t yeast
+
+* Directions
+
+1. Combine ingredients, briefly
+2. Cover and let sit 18+ hours at room temperature
+3. Fold over two or three times
+4. Preheat oven to 450\deg, including covered baking vessel
+5. Turn dough into vessel and bake 30 minutes covered, 25 minutes uncovered
