@@ -1,5 +1,5 @@
 #+OPTIONS: toc:nil
-#+HTML_LINK_UP: ../index.html
+#+HTML_HEAD: <link href="../css/solarized-dark.css" rel="stylesheet" />
 #+HTML_LINK_HOME: ../index.html
 #+TITLE: Weather Forecast
 
@@ -16,7 +16,7 @@ Country:<br>
 #+end_html
 
 Here's the script. The apiKey is no longer valid, it seems.
-#+BEGIN_SRC javascript
+#+BEGIN_SRC javascript -n
 var elTrigger;
 elTrigger = document.getElementById('get-weather');
 elTrigger.addEventListener('click', function() {

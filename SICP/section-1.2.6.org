@@ -1,9 +1,9 @@
-#+HTML_LINK_UP: ../../index.html
+#+HTML_HEAD: <link href="../../css/solarized-dark.css" rel="stylesheet" />
 #+HTML_LINK_HOME: ../../index.html
 #+TITLE: SICP Section 1.2.6
 * Exercise 1.22
-2015.07.09
-#+BEGIN_SRC racket            
+2015-07-09
+#+BEGIN_SRC racket -n            
 (define (search-for-primes start-range end-range)
   (if (even? start-range)
       (search-for-primes (+ 1 start-range) end-range)
@@ -24,7 +24,7 @@
   (display elapsed-time))
 #+END_SRC
 * Exercise 1.23
-2015.08.10
+2015-08-10
 
 From the book:
 
@@ -32,7 +32,7 @@ From the book:
 To implement this change, define a procedure ~next~ that returns 3 if its input is equal to 2 and otherwise returns its input plus 2. 
 #+END_QUOTE
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (next n)
   (cond ((= 2 n) 3)
         (else (+ n 2))))
@@ -42,7 +42,7 @@ To implement this change, define a procedure ~next~ that returns 3 if its input 
 ...Modify the ~smallest-divisor~ procedure to use ~(next test-divisor)~ instead of ~(+ test-divisor 1)~. 
 #+END_QUOTE
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (smallest-divisor n)
   (find-divisor n 2))
 
@@ -56,7 +56,7 @@ To implement this change, define a procedure ~next~ that returns 3 if its input 
 ...With ~timed-prime-test~ incorporating this modified version of ~smallest-divisor~, run the test for each of the 12 primes found in exercise 1.22. 
 #+END_QUOTE
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (timed-prime-test n)
   (newline)
   (display n)
@@ -91,9 +91,9 @@ To implement this change, define a procedure ~next~ that returns 3 if its input 
 ; 1000037       0.1350097656    0.13896727998   
 #+END_SRC
 * Exercise 1.24
-2015.08.10
+2015-08-10
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (timed-prime-test n)
   (newline)
   (display n)
@@ -119,8 +119,8 @@ To implement this change, define a procedure ~next~ that returns 3 if its input 
 #+END_SRC
 
 * Exercise 1.27
-2015.07.10
-#+BEGIN_SRC racket
+2015-07-10
+#+BEGIN_SRC racket -n
 (define (expmod base exp m)
   (cond ((= exp 0)
          1)
@@ -144,7 +144,7 @@ To implement this change, define a procedure ~next~ that returns 3 if its input 
 #+END_SRC
 
 * Exercise 1.28
-2015.07.15
+2015-07-15
 
 From the book (excerpted):
 
@@ -152,7 +152,7 @@ From the book (excerpted):
 ...Modify the ~expmod~ procedure to signal if it discovers a nontrivial square root of 1, and use this to implement the Miller-Rabin test with a procedure analogous to ~fermat-test~. 
 #+END_QUOTE
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (expmod base exp m)
   (cond ((= exp 0)
          1)

@@ -1,8 +1,8 @@
-#+HTML_LINK_UP: ../../index.html
+#+HTML_HEAD: <link href="../../css/solarized-dark.css" rel="stylesheet" />
 #+HTML_LINK_HOME: ../../index.html
 #+TITLE: SICP Section 1.2.4
 * Exercise 1.16
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (expt b n)
   (if (= n 0)
       1
@@ -46,7 +46,7 @@
   (ssExptIter b b 1 n))
 #+END_SRC
 * Exercise 1.17
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 ; exponentiaton as repeated multiplication
 ; using successive squares
 (define (fast-expt b n)
@@ -81,7 +81,7 @@ if y is odd, add x to running total and decrement y
 |#
 #+END_SRC
 * Exercise 1.18
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (russianPeasantMethod x y)
   (define (even? x) (= 0 (remainder x 2)))
   (define (double x) (+ x x))
@@ -101,7 +101,7 @@ if y is odd, add x to running total and decrement y
 Nested ~if~ ought to be flat ~cond~.
 Internal definitions ought to be ~let~.
 * Exercise 1.19
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (fib n) (fibIter 1 0 0 1 n))
 (define (fibIter a b p q count)
   (cond ((= count 0)

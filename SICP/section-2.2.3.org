@@ -1,4 +1,4 @@
-#+HTML_LINK_UP: ../../index.html
+#+HTML_HEAD: <link href="../../css/solarized-dark.css" rel="stylesheet" />
 #+HTML_LINK_HOME: ../../index.html
 #+TITLE: SICP Section 2.2.3
 * Exercise 2.33
@@ -6,7 +6,7 @@ From the book:
 #+BEGIN_QUOTE
 Fill in the missing expressions to complete the following definitions of some basic list-manipulation operations as accumulations:
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (map p sequence)
   (accumulate (lambda (x y) <??>) nil sequence))
 (define (append seq1 seq2)
@@ -17,7 +17,7 @@ Fill in the missing expressions to complete the following definitions of some ba
 #+END_QUOTE
 ** map
 ~accumulate~ returns one expression; ~map~ should return a list. I'll use ~cons~ to build that list.
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (map p sequence)
   (accumulate (λ (x y) (cons (p x) y)) null sequence))
 #+END_SRC
@@ -25,7 +25,7 @@ The anonymous function takes two parameters because ~accumulate~ performs the fu
 
 ** append
 Here's ~append~ defined in terms of ~accumulate~:
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (append seq1 seq2)
   (accumulate cons seq2 seq1))
 #+END_SRC
@@ -33,7 +33,7 @@ As a parameter of ~accumulate~, ~seq1~ is the sequence and ~seq2~ is 'init'.
 
 ** length
 Here is ~length~. It doesn't matter what the ~car~ or the ~cdr~ of the sequence are, it only matters whether or not ~cdr~ is null. If the ~cdr~ is not null, return the sum of 1 and ~(length (cdr sequence))~. The second paramter passed to our anonymous function can be considered ~(length (cdr sequence))~.
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (length sequence)
   (accumulate (λ (x y) (+ 1 y)) 0 sequence))
 #+END_SRC
@@ -50,7 +50,7 @@ using a well-known algorithm called Horner's rule, which structures the computat
 
 In other words, we start with /a_{n}/, multiply by /x/, add /a_{n-1}/, multiply by /x/, and so on, until we reach /a_{0}/. Fill in the following template to produce a procedure that evaluates a polynomial using Horner's rule. Assume that the coefficients of the polynomial are arranged in a sequence, from /a_0/ through /a_n/.
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (horner-eval x coefficient-sequence)
   (accumulate (lambda (this-coeff higher-terms) <??>)
               0
@@ -62,7 +62,7 @@ For example, to compute /1 + 3x + 5x^3 + x^5/ at /x = 2/ you would evaluate
  ~(horner-eval 2 (list 1 3 0 5 0 1))~
 #+END_QUOTE
 My answer:
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (horner-eval x coefficient-sequence)
   (accumulate (λ (this-coeff higher-terms)
                    (+ this-coeff (* x higher-terms)))
@@ -71,7 +71,7 @@ My answer:
 #+END_SRC
 Why does this work? In my notes, I re-wrote the evaluation of the expression /1 + 3x + 5x^3 + x^5/ at /x = 2/ like this:
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (+ (* 1 (expt 3 0))
    (* 3 (expt 3 1))
    (* 0 (expt 3 2))
@@ -82,7 +82,7 @@ Why does this work? In my notes, I re-wrote the evaluation of the expression /1 
 
 Looking at at now, though - the structure doesn't represent the process ~accumulate~ evolves. Horner's rule is nested and recursive, as opposed to flat and iterative. It might be represented better like this:
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (+ a_0 (* x (accumulation of remaining terms))) -->
 (+ a_0 (* x (+ a_1 (* x (accumulation of remaining terms))))) -->
 (+ a_0 (* x (+ a_1 (* x (+ a_2 (* x (accumulation of remaining terms))))))) -->
@@ -90,14 +90,14 @@ Looking at at now, though - the structure doesn't represent the process ~accumul
 #+END_SRC
 * Exercise 2.35
 Here we are asked to redefine the ~count-leaves~ function from section 2.2.2 as an accumulation, given this partial definition.
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (count-leaves t)
   (accumulate <??> <??> (map <??> <??>)))
 #+END_SRC
 Thinking in terms of the signal-processing analogy, we'd need to take a given tree, enumerate the leaves (that is, flatten the tree), transform the leaves into values of 1, then count them up. We already have a flatten-tree function from section 2.2.3 (and before that, from exercise 2.28 in section 2.2.2).
 
 Here's a stab at it:
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (count-leaves t)
   (accumulate + 0 (map (λ (x) 1) (enumerate-tree t))))
 #+END_SRC
@@ -105,7 +105,7 @@ Here's a stab at it:
 From the text:
 #+BEGIN_QUOTE
 Fill in the missing expressions in the following definition of ~accumulate-n~:
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (accumulate-n op init seqs)
   (if (null? (car seqs))nil
       (cons (accumulate op init <??>)
@@ -115,7 +115,7 @@ Fill in the missing expressions in the following definition of ~accumulate-n~:
 The first thing I want to do here is produce a list of the ~car~ of each of the elements in ~seqs~. Seems like an obvious choice is ~car~ and then ~cdr~ later on.
 
 Originally, ~(map car seqs)~ where ~seqs~ was defined as ~((1 2 3) (4 5 6) (7 8 9) (10 11 12))~ returned ~(1 4 7 10 11 12)~. It should have returned ~(1 4 7 10)~. It took me quite a long time to realize this was because I had (incorrectly) redefined ~map~ above as part of exercise 2.33. Once that was fixed, I was all set.
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (accumulate-n op init seqs)
   (if (null? (car seqs))
       null
@@ -124,12 +124,12 @@ Originally, ~(map car seqs)~ where ~seqs~ was defined as ~((1 2 3) (4 5 6) (7 8 
 #+END_SRC
 * Exercise 2.37
 Given this definition of the dot product,
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (dot-product v w)
   (accumulate + 0 (map * v w)))
 #+END_SRC
 We're asked to fill in the missing expressions in these related operations:
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (matrix-*-vector m v)
   (map <??> m))
 (define (transpose mat)
@@ -146,7 +146,7 @@ I'm not sure how you'd go about redefining the more general version of ~map~ in 
 
 Anyhow, ~map~ is tailor-made for these linear algebra procedures. Here's ~matrix-*-vector~:
 ** matrix-*-vector
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (matrix-*-vector m v)
   (map (λ (row) (dot-product v row)) m))
 #+END_SRC
@@ -154,7 +154,7 @@ Anyhow, ~map~ is tailor-made for these linear algebra procedures. Here's ~matrix
 ~Accumulate~ returns a single argument, but I want a list. A list of lists. I want to take the ~car~ of each sub-list of the matrix and have that become my new first sub-list.
 
 Since I want to accumulate a list, my procedure should use ~cons~. Again, since I want to accumulate a list, my initial operand should be the null list.
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (transpose mat)
   (accumulate-n
    cons    ; procedure to be applied to first and second element of mat
@@ -168,7 +168,7 @@ This is a strategy I find myself using often: without thinking too carefully abo
 Reminds me of the saying, "The sooner you start coding, the longer it will take to finish."
 ** matrix-*-matrix
 My solution:
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (matrix-*-matrix m n)
   (let ((cols (transpose n)))
     (map (λ (rows) (matrix-*-vector cols rows)) m)))
@@ -179,7 +179,7 @@ My solution:
 I'd interpret this as ~(1 / remainder)~, then ~(1 / (2 / remainder))~, then ~(1 / (2 / (3 / remainder)))~, then ~(1 / (2 / (3 / 1)))~.
 
 To put it another way:
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (/ 1 remainder) -->
 (/ 1 (/ 2 remainder)) -->
 (/ 1 (/ 2 (/ 3 remainder))) -->
@@ -198,7 +198,7 @@ The most striking part of this is that the initial term, in this case 1, is used
 
 You could also represent it like this, below. It was difficult for me to understand that the order of the elements is not reversed.
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (/ (/ (/ 1 1) 2) 3) -->
 (/ (/ 1 2) 3) -->
 (/ .5 3) -->
@@ -208,13 +208,13 @@ You could also represent it like this, below. It was difficult for me to underst
 A tangent: I tested this with Racket's ~foldr~, ~foldl~, ~accumulate~, and the definition of ~fold-left~ given in SICP. ~fold-left~ does return 1/6, which I expected. ~foldl~, however, returns 3/2 (as do ~accumulate~ and ~foldr~). Looks like this is a known issue (feature, I suppose) with Racket, and the primary difference between ~foldr~ and ~foldl~ is that ~foldl~ processes the lists in constant space (as opposed to the terms being evaluated in the opposite order). I wonder if that means it evolves an iterative process instead of a recursive process.
 ** Evaluate ~(fold-right list null (list 1 2 3))~
 This becomes ~(list 1 remainder)~, then ~(list 1 (list 2 remainder))~, then ~(list 1 (list 2 (list 3 remainder)))~, then ~(list 1 (list 2 (list 3 null)))~. Then, moving back up -
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (list 1 (list 2 '(3 ()))) -->
 (list 1 '(2 (3 ()))) -->
 '(1 (2 (3 ())))
 #+END_SRC
 ** Evaluate ~(fold-left list null (list 1 2 3))~
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (list (list (list null 1) 2) 3) -->
 (list (list '(() 1) 2) 3) -->
 (list '((() 1) 2) 3) -->
@@ -227,7 +227,7 @@ Compared to the division example, the list example preserves the left- or right-
 From the book:
 #+BEGIN_QUOTE
 Complete the following definitions of ~reverse~ terms of ~fold-right~ and ~fold-left~ from exercise 2.38:
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (reverse sequence)
   (fold-right (lambda (x y) <??>) null sequence))
 (define (reverse sequence)

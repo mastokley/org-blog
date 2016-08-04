@@ -1,8 +1,8 @@
-#+HTML_LINK_UP: ../../index.html
+#+HTML_HEAD: <link href="../../css/solarized-dark.css" rel="stylesheet" />
 #+HTML_LINK_HOME: ../../index.html
 #+TITLE: SICP Section 1.1.7
 * Exercise 1.7
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
   (define (sqrt-iter guess x)
     (if (good-enough? guess x)
         guess
@@ -26,7 +26,7 @@
 #+END_SRC
 
 * Exercise 1.8
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (cbrt-iter guess x)
   (if (good-enough? guess x)
       guess

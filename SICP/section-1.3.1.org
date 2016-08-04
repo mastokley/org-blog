@@ -1,10 +1,10 @@
-#+HTML_LINK_UP: ../../index.html
+#+HTML_HEAD: <link href="../../css/solarized-dark.css" rel="stylesheet" />
 #+HTML_LINK_HOME: ../../index.html
 #+TITLE: SICP Section 1.3.1
-2015.08.11
+2015-08-11
 * Exercise 1.29
 One of many functions in which I would now use ~let~ instead of internal ~defines~.
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (simpsons-rule f a b n)
   (define h (/ (- b a) n))
   (define (inc k) (+ k 1))
@@ -23,7 +23,7 @@ One of many functions in which I would now use ~let~ instead of internal ~define
 * Exercise 1.31
 ** Part A
 Write a procedure analogous to ~sum~ called ~product~. 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (product term a next b)
   (if (> a b)
       1
@@ -35,7 +35,7 @@ Write a procedure analogous to ~sum~ called ~product~.
 #+END_SRC
 ** Part B
 Write a product procedure that generates an iterative process. 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (product-iter term a next b)
   (define (iter a result)
     (if (> a b)
@@ -47,7 +47,7 @@ Write a product procedure that generates an iterative process.
 #+END_SRC
 * Exercise 1.30
 We're asked to rewrite ~sum~ iteratively.
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (sum2 term a next b)
   (define (iter a result)
     (if (> a b)
@@ -60,7 +60,7 @@ We're asked to rewrite ~sum~ iteratively.
 * Exercise 1.32
 ** Part A
 Show that ~sum~ and ~product~ are both special cases of a still more general notion called ~accumulate~. 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (accumulate combiner
                     null-value
                     term
@@ -81,7 +81,7 @@ Show that ~sum~ and ~product~ are both special cases of a still more general not
   (accumulate * 1 term a next b))
 #+END_SRC
 ** Part B
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 ; accumulate as iterative process, not recursive
 (define (accumulate-iter combiner
                          null-value
@@ -99,7 +99,7 @@ Show that ~sum~ and ~product~ are both special cases of a still more general not
 #+END_SRC
 * Exercise 1.33
 Here we write an even more general process called ~filtered-accumulate~:
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (filtered-accumulate combiner
                              null-value
                              term
@@ -119,7 +119,7 @@ Here we write an even more general process called ~filtered-accumulate~:
                                      condition))))
 #+END_SRC
 ** Part A
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 ; express sum of squares of primes in interval [a, b]
 (define (sum-of-squares a b)
   (filtered-accumulate +
@@ -131,7 +131,7 @@ Here we write an even more general process called ~filtered-accumulate~:
                        prime?))
 #+END_SRC
 ** Part B
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 ; sum of all positive integers i < n such that GCD(i,n) = 1
 (define (gcd a b)
   (if (= b 0)

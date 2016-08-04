@@ -1,8 +1,8 @@
 #+OPTIONS: toc:nil
-#+HTML_LINK_UP: ../index.html
+#+HTML_HEAD: <link href="../css/solarized-dark.css" rel="stylesheet" />
 #+HTML_LINK_HOME: ../index.html
 #+TITLE: HTML Generator 
-2015.12.10
+2015-12-10
 
 Use the fields below to generate HTML using a more concise syntax.
 
@@ -55,7 +55,7 @@ If I were going to redo it, I'd try and make better use of the 'wishful thinking
 
 But, all that aside - here's the JavaScript I wrote:
 
-#+BEGIN_SRC javascript
+#+BEGIN_SRC javascript -n
 var elTrigger = document.getElementById('html-transform-trigger');
 elTrigger.addEventListener('click', function() {
     main(document.getElementById('html-input').value);

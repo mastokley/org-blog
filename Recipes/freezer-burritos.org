@@ -1,8 +1,8 @@
 #+OPTIONS: toc:nil
-#+HTML_LINK_UP: ../index.html
+#+HTML_HEAD: <link href="../css/solarized-dark.css" rel="stylesheet" />
 #+HTML_LINK_HOME: ../index.html
 #+TITLE: Freezer Burritos
-2016.03.08
+2016-03-08
 
 * Ingredients
 
@@ -13,8 +13,8 @@
 - 4 - 5 onions
 - 6 green bell peppers
 - 16 oz cheese, shredded
-- [[file:Salsa%20Ranchera.org][salsa ranchera]] 
 - 15 big white flour tortillas
+- [[file:salsa-ranchera.org][salsa ranchera]]
 
 * Directions
 

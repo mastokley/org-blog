@@ -1,8 +1,8 @@
 #+OPTIONS: toc:nil
-#+HTML_LINK_UP: ../index.html
+#+HTML_HEAD: <link href="../css/solarized-dark.css" rel="stylesheet" />
 #+HTML_LINK_HOME: ../index.html
 #+TITLE: No Work Bread
-2016.02.14
+2016-02-14
 
 Adapted from Jim Lahey's recipe.
 

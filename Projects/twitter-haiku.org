@@ -1,0 +1,134 @@
+#+OPTIONS: toc:nil
+#+HTML_HEAD: <link href="../css/solarized-dark.css" rel="stylesheet" />
+#+HTML_LINK_HOME: ../index.html
+#+TITLE: Twitter Haiku
+2016-06-06
+
+The premise! - I'm going to get a handful of tweets for a given hashtag, determine how many syllables there are in each tweet, and produce a haiku poem out of one or more tweets. Best case scenario, the poem is thematically consistent (because each tweet shares a common hashtag) and interesting because of the juxtaposition between individually-authored tweets.
+
+This is a project I started thinking about before the bootcamp. I remember trying to research it and get a basic frame of reference. I ran into two general suggestions. One, people (mostly Twitter, actually) recommended that I learn and use the Twitter API, which would also require registering an account on Twitter, registering that particular app, and authenticating whenever the app interacted with the API. Two, I was made aware of the idea of 'tokenizing' the tweets into words, whose syllables could then be counted.
+
+Coming back to the project afterwards, I was not too enthusiastic about the prospect of learning another idiosyncratic API. There are two or maybe three things I want to do that require interacting with Twitter. One, get trending hashtags. Two, get tweets associated with a given hashtag, and three potentially post the newly-created haiku as a tweet.
+
+* Getting trends (trending hashtags)
+Now, if you point your browser at http://twitter.com/search-home, and you enable JavaScript, they'll show you the trending hashtags right there. In the picture below, you can see I'm not authenticated:
+
+file:../img/TwitterHaiku/trends.png
+
+However, the trends are not included in the http response to the get request to http://twitter.com/search-home.
+
+It took some poking around the Firefox developer console to figure this out. It turns out they are put there by a JS script that gets them from http://twitter.com/i/trends. (The http response to that request will give you the trending hashtags as JSON, which the Python requests library is only too happy to convert for you.)
+
+#+BEGIN_SRC python
+import random
+import requests
+from bs4 import BeautifulSoup
+from nltk.corpus import cmudict
+TRENDS_URL = 'http://twitter.com/i/trends'
+TRENDS_CLASS = 'trend-name'
+TWEETS_CLASS = 'tweet-text'
+
+
+def get_trends():
+    """Return a list of trending hashtags."""
+    html = requests.get(TRENDS_URL).json()['module_html']
+    soup = BeautifulSoup(html, 'html.parser')
+    elements = soup.findAll(class_=TRENDS_CLASS)
+    return [t.text for t in elements if t.text[0] == '#']
+
+trends = get_trends()
+print(trends)
+#+END_SRC
+
+#+BEGIN_SRC python
+[u'#StateOfWomen', u'#DolanTwinsNewVideo', u'#LGBTQHatesTrumpParty', u'#BB18', u'#5sosfansbreaktheinternet']
+#+END_SRC
+
+* Getting tweets
+Now that we have our trends, we can grab a set of tweets pretty easily with a simple http get to https://twitter.com/hashtag/ThisIsTheHashtag:
+
+#+BEGIN_SRC python
+def get_tweets(hashtag):
+    stub = 'https://twitter.com/hashtag'
+    url = '/'.join([stub, hashtag.strip('#')])
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    elements = soup.findAll(class_=TWEETS_CLASS)
+    return [t.text for t in elements]
+
+tweets = get_tweets(trends[0])
+print(tweets)
+#+END_SRC
+
+#+BEGIN_SRC python
+[u'.@VP Biden delivers remarks at the @WhiteHouse United #StateOfWomen Summit in Washington, D.C. http://snpy.tv/1URbJK9\xa0', u"Thank you for yours. We're all #StrongerTogether. #StateOfWomen https://twitter.com/GlobalFundWomen/status/742732656807444480\xa0\u2026", u"Thank you @Mariska for your incredible passion & commitment to survivors of sexual violence. We're excited to be here, too! #stateofwomen", u'Mic drop @POTUS    #StateOfWomen http://huff.to/238aNaA\xa0pic.twitter.com/IapDBiAwPy', u'"This is what a feminist looks like."\n\n#StateOfWomen pic.twitter.com/RwwK2JpUyp', u"Amy answers @deeljcr's #SMARTGIRLSASK question on maintaining friendships  #StateOfWomen @reportinglabspic.twitter.com/k7KSNTwRo0", u'Meet Mikaila Ulmer, the 11-year-old entrepreneur who introduced @POTUS at #StateofWomen http://bit.ly/1XnSaiP\xa0pic.twitter.com/xbpfNFCoSx', u"the #StateOfWomen summit celebrates how far we've come regarding women's rights - and how far we still have to go https://amp.twimg.com/v/144d35e7-9e4c-4f5e-a0f6-6e352e434d17\xa0\u2026", u'Pres Obama at #StateofWomen speaking on the need for equality in the workforce, incl. paid family and sick leave. pic.twitter.com/v9IkoYLSGX', u'It appears that because Joe Biden spoke for almost an hour at #StateOfWomen, the rest of the schedule is truncated.', u'Melinda on the gender gap nobody\u2019s talking about. #StateOfWomen http://b-gat.es/1URmEnc\xa0', u'"Our country is not just about the Benjamins," says @POTUS at #StateofWomen. "It\'s about the Tubmans, too" pic.twitter.com/vyjYgECZ9z', u'Ur bae @POTUS tells #StateofWomen he loves babies: "They bring them into the Oval Office. Makes me feel good." pic.twitter.com/YJd0SavsEx', u'"We passed the ACA to give more Americans the security of health care coverage." \u2014@POTUS #StateOfWomen pic.twitter.com/ez2ef0DXG8', u'"Today, thanks to the Affordable Care Act, birth control is free." #StateOfWomen #ThanksObamacarepic.twitter.com/oqEPYGkdJe', u'"I may be a little grayer than I was 8 yrs ago,but #ThisIsWhatAFeministLooksLike"- @POTUS Barack Obama #StateOfWomen pic.twitter.com/e2DOQla3zZ', u'"We need to retool our system so that modern families and businesses can thrive." \u2014@POTUS #StateOfWomen pic.twitter.com/NCeE5gHNHi', u'"Our workplace policies still look like they\u2019re straight out of Mad Men. " \u2014@POTUS #StateOfWomen pic.twitter.com/zgwvO8OlIV', u'"I may be a bit grayer than I was 8 years ago, but this is what a feminist looks like." \u2013 @POTUS #StateOfWomen pic.twitter.com/dHHafGakHr', u'From starting her own lemonade company to introducing @POTUS at #StateofWomen. Meet Mikaila: http://xon.ec/1RVeKvQ\xa0pic.twitter.com/Dzyo6WFmdR']
+#+END_SRC
+
+* Counting syllables
+For a given tweet, we're going to want to count the syllables. I went back and forth about whether I should use an algorithmic solution or a brute force solution. I believe there probably are algorithms that attempt to do this - in fact, LaTeX uses a sophisticated syllable-finding algorithm to decide where to hyphenate words - but I also believe English is going to have a *ton* of edge-cases. (My intuition is that this comes up all the time in natural language processing type tasks, but that's another topic.)
+
+Here is the brute force approach.
+
+#+BEGIN_SRC python -n
+
+def count_syllables(word):
+    """Return count of syllables for given English word."""
+    d = cmudict.dict()
+    return sum(1 for s in d[word.lower()][0] if s[-1].isdigit())
+
+print(count_syllables('potato'))
+#+END_SRC
+
+#+BEGIN_SRC python
+3
+#+END_SRC
+
+~d~ is a dictionary whose keys are lowercase words and whose values are lists of lists of pronunciations; ~d[word.lower()][0]~ resolves to ~[u'P', u'AH0', u'T', u'EY1', u'T', u'OW2']~. I suppose if there were more than one way of pronouncing 'potato', we'd get more than one element in the outer list. The numbers 0, 1, or 2 that are appended to vowels indicate stress.
+
+In [[file:../SICP/section-2.2.3.html][section 2.2.3]] of the SICP, 'Sequences as Conventional Interfaces', we're encouraged to 'concentrate on the "signals" that flow from one stage in the process to the next'. The better we're able to analogize our particular problem as a stream of signals, the easier it be will be to design a solution - in particular, a solution that makes use of ~enumerate~, ~filter~, ~map~, and ~accumulate~.
+
+Line 4, above, is a great example of this kind of approach. To find count the number of syllables, first we /enumerate/ the word into a stream of... 'phonemes'. Then we /filter/ the stream to remove the consonants. After that, we're using /map/ to return 1 for every vowel (in this case, each vowel counts as one syllable). Lastly, we /accumulate/ the stream into a sum.
+
+* Tokenizing the tweets
+
+Pretty straightforward. I'm using a tokenizer that is specifically built to handle tweets:
+
+#+BEGIN_SRC python
+def get_tokens(tweet):
+    """Clean and tokenize tweets."""
+    print(u'Tokenizing\t{}'.format(tweet))
+    tokenizer = TweetTokenizer()
+    return tokenizer.tokenize(tweet)
+#+END_SRC
+
+* Forming the haiku
+
+to be continued...
+
+#+BEGIN_COMMENT
+
+#+BEGIN_SRC python
+def form_haiku():
+    hashtag = random.choice(get_trends())
+    tweets = get_tweets(hashtag)
+    for tweet in tweets:
+        print('tweet: {}'.format(tweet))
+        print('syllables: {}'.format(count_syllables(tweet)))
+    # haiku = []
+    # while not haiku:
+        # print('enter while loop')
+        # print(haiku)
+        # hashtag = random.choice(get_trends())
+        # print(hashtag)
+        # tweets = get_tweets(hashtag)
+        # verses = [3] # verses = [5, 7, 5]
+        # for tweet in tweets:
+            # if verses and count_syllables(tweet) == verses[0]:
+                # haiku.append(tweet)
+                # print('appended {}'.format(tweet))
+                # verses.pop(0)
+                # print('verses remaining: {}'.format(verses))
+    # return hashtag, haiku
+#+END_SRC
+
+#+END_COMMENT

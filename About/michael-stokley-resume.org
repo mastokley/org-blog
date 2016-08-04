@@ -1,0 +1,58 @@
+#+HTML_LINK_HOME: ../index.html
+#+OPTIONS: toc:nil num:nil H:5 ':t title:t date:nil author:nil ^:nil
+#+HTML_HEAD: <link href="../css/solarized-dark.css" rel="stylesheet" />
+#+TITLE: Michael Stokley - Resume
+
+#+ATTR_HTML: :align center :border 0 :rules none
+| [[mailto:michael@michaelstokley.com][michael@michaelstokley.com]] |   | (303) 801-8575       |   | Seattle, WA               |
+| [[http://michaelstokley.com][michaelstokley.com]]         |   | [[https://github.com/mastokley][github.com/mastokley]] |   | [[https://linkedin.com/in/mastokley][linkedin.com/in/mastokley]] |
+* Profile
+Software developer. I'm patient enough to take difficult projects seriously, and impatient enough to automate tedious, needlessly-manual projects. In my previous accounting position, I greatly exceeded expectations by teaching myself SQL and relational database theory in order to automate the vast majority of my data entry / data quality tasks (and avoid using a cumbersome GUI). I've been learning new languages and software tools ever since.
+* Technical Skills
+** Proficient
+Python, Django, Pyramid, Git, SQL, HTML/CSS, Relational Database Theory, Unix systems, Bash, Org-mode, Scheme
+** Familiar
+JavaScript, jQuery, AWS Deployment, Heroku Deployment, Ansible, PostgreSQL, nginx, Gunicorn
+* Projects
+#+ATTR_HTML: :border 0 :rules none
+| 2016.04 | *\quot{}Reciprocity\quot{}*, http://reciprocity.site                                                                                                                                                                                    |
+|         | A full-stack Python web application for recipe sharing and collaboration. Built with Django and PostgreSQL, deployed via Ansible to an AWS EC2 instance. Source code here: [[https://github.com/TeamReciprocity/reciprocity][github.com/TeamReciprocity/reciprocity]].                      |
+| 2016.04 | *Toy Domain Scraper*, [[https://github.com/mastokley/toy_domain_scraper][github.com/mastokley/toy_domain_scraper]]                                                                                                                                                                           |
+|         | A web scraper built in Python. Uses breadth-first traversal for reliable, fast results.                                                                                                                                                 |
+| 2016.03 | *\quot{}HomeQuest\quot{}*, [[https://github.com/homequest/homequest][github.com/homequest/homequest]]                                                                                                                                                                               |
+|         | A full-stack Python web application to gamify household chores and chore management. We manually implemented authorization, authentication, and row-level security. Built in Pyramid with a PostgreSQL database and deployed on Heroku. |
+| 2016.01 | *Weather Forecast*, [[http://michaelstokley.com/Projects/weather-forecast][michaelstokley.com/Projects/weather-forecast]]                                                                                                                                                                        |
+|         | Straightforward front-end JavaScript project to practice DOM manipulation and third-party API consumption.                                                                                                                              |
+| 2015.12 | *HTML Generator*, [[https://michaelstokley.com/Projects/HTML-generator][michaelstokley.com/Projects/HTML-generator]]                                                                                                                                                                            |
+|         | Converts a lightweight, concise markdown into prettified, verbose HTML. Written in JavaScript.                                                                                                                                          |
+* Experience
+** Recology CleanScapes, Seattle, WA
+*AR Specialist*, /2012.04 - 2015.04/
+- Wrote and maintained a library of accurate, sophisticated SQL queries to capture evolving data inconsistencies; these queries eliminated 37.5 labor hours per month despite a 126% increase in customer accounts over a two year period
+- Designed database reports for internal and external customers, such as government officials and senior management
+- Delegated data entry / data revision tasks
+- Collaborated with operations, data quality, payment processing, and customer service teams to analyze and improve processes as new city contracts were won
+# - Oversaw and coordinated all billing and collections activities
+# - Closed the month on a deadline
+*Data Quality Specialist*, /2011.07 - 2012.04/ \\
+/Dispatch, data entry, and customer service for the graveyard shift/
+# - Reviewed truck video for misses and accidents
+# - Illegal dumping reporting for SPU
+# - Various clerical, reporting, and recordkeeping duties
+** Kojen English Language School in Taipei, Taiwan
+*ESL Teacher*, /2009.10 - 2010.10/ \\
+/Taught high-intensity ESL classes for students aged 5 - 18/
+# - Resolved classroom conflicts
+# - Planned lessons and coordinated lesson plans with co-teachers
+# - Prepared end-of-class student grade reports
+* Education
+** Code Fellows, Seattle, WA
+*Certificate*, /2016/ \\
+Advanced Python Development
+** North Seattle College, Seattle, WA
+*Coursework*, /2012 - 2014/ \\
+Math, Statistics, and Computer Science
+** St. John's College, Annapolis, MD
+*B. A., Philosophy*, /2009/ \\
+Double Major, Philosophy and History of Math and Science \\
+Double Minor, Classical Studies and Comparative Literature

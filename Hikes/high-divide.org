@@ -1,8 +1,8 @@
 #+OPTIONS: toc:nil
-#+HTML_LINK_UP: ../index.html
+#+HTML_HEAD: <link href="../css/solarized-dark.css" rel="stylesheet" />
 #+HTML_LINK_HOME: ../index.html
 #+TITLE: High Divide
-2015.06.24
+2015-06-24
 
 This hike was in the Olympic National Park, so I had to carry a bear can.
 

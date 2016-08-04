@@ -1,11 +1,11 @@
-#+HTML_LINK_UP: ../../index.html
+#+HTML_HEAD: <link href="../../css/solarized-dark.css" rel="stylesheet" />
 #+HTML_LINK_HOME: ../../index.html
 #+TITLE: SICP Section 2.1.4
-2015.07.09
+2015-07-09
 * Exercise 2.7
 Exercise 2.7 asks us to define selectors ~upper-bound~ and ~lower-bound~:
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (lower-bound i)
   (min (car i) (cdr i)))
 (define (upper-bound i)
@@ -17,7 +17,7 @@ With ~min~ and ~max~, you don't need to assume that the upper and lower bounds a
 * Exercise 2.8
 Now that the selectors and constructors are implemented, we'll define a procedure to subtract intervals:
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (sub-interval a b)
   (add-interval a
                 (make-interval (* -1 (lower-bound b))
@@ -33,36 +33,44 @@ The width of an interval is half of the difference between its upper and lower b
 
 Let's rearrange the ~width-interval~ expression a little:
 
-#+BEGIN_SRC racket
-1 (width-interval (add-interval (make-interval a b)
-2                               (make-interval c d)))
-
-1 (width-interval (make-interval (+ a c) (+ b d)))
-
-1 (/ (- (+ b d)
-2       (+ a c))
-3    2)
-
-1 (/ (+ b d (- a) (- c))
-2    2)
-
-1 (/ (+ (- b a)
-2       (- d c))
-3    2)
-
-1 (+ (/ (- b a) 2)
-2    (/ (- d c) 2))
+#+BEGIN_SRC racket -n
+(width-interval (add-interval (make-interval a b)
+                              (make-interval c d)))
+#+END_SRC
+#+BEGIN_SRC racket -n
+(width-interval (make-interval (+ a c) (+ b d)))
+#+END_SRC
+#+BEGIN_SRC racket -n
+(/ (- (+ b d)
+      (+ a c))
+   2)
+#+END_SRC
+#+BEGIN_SRC racket -n
+(/ (+ b d (- a) (- c))
+   2)
+#+END_SRC
+#+BEGIN_SRC racket -n
+(/ (+ (- b a)
+      (- d c))
+   2)
+#+END_SRC
+#+BEGIN_SRC racket -n
+(+ (/ (- b a) 2)
+   (/ (- d c) 2))
 #+END_SRC
 
 But! This is the sum of the widths of the addends. Therefore, the width of the sum is a function of the widths of the original addends.
 
 Not so for multiplication:
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (width-interval (mul-interval (make-interval 1 2)
-                              (make-interval 3 4))) -> 5/2
+                              (make-interval 3 4)))
+#+END_SRC
+The above expression evaluates to 5/2. However, the below expression evaluates to 5:
+#+BEGIN_SRC racket -n
 (width-interval (mul-interval (make-interval 1 2)
-                              (make-interval 2 3))) -> 5 
+                              (make-interval 2 3)))
 #+END_SRC
 
 Above, the width of the factors is consistent (always equal to 1, in this case), but the widths of the products are not. Therefore, we cannot say that the width of the product is a function of the widths of the factors. The same can be said for division - especially in this implementation, where division is explicitly defined as a function of multiplication.
@@ -70,7 +78,7 @@ Above, the width of the factors is consistent (always equal to 1, in this case),
 * Exercise 2.10
 We can refine the ~div-interval~ procedure so it throws an error (sort of) when fed 0 as a denominator:
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (div-interval-2 x y)
   (if (or (= (width-interval x) 0)
           (= (width-interval y) 0))
@@ -87,7 +95,7 @@ This was fun! Here's the prompt from the textbook:
 In passing, Ben also cryptically comments: 'By testing the signs of the endpoints of the intervals, it is possible to break ~mul-interval~ into nine cases, only one of which requires more than two multiplications.' Rewrite this procedure using Ben's suggestion. 
 #+END_QUOTE
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (mul-interval-2 x y)
   (let ((a (lower-bound x))
         (b (upper-bound x))
@@ -124,9 +132,9 @@ From the book:
 Define a constructor make-center-percent that takes a center and a percentage tolerance and produces the desired interval. You must also define a selector percent that produces the percentage tolerance for a given interval. The center selector is the same as the one shown above. 
 #+END_QUOTE
 
-My answer, including center from the book:
+My answer, including ~center~ from the book:
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (center i)
   (/ (+ (lower-bound i) (upper-bound i)) 2))
 
@@ -147,7 +155,7 @@ Show that under the assumption of small percentage tolerances there is a simple 
 
 My code below. If I rewrote this, I might put ~if-consequent~ into ~let~ instead of ~define~.
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (exercise2.13 factor-a-center
                       factor-b-center
                       factor-a-percent
@@ -186,7 +194,7 @@ My code below. If I rewrote this, I might put ~if-consequent~ into ~let~ instead
 
 And here is the output. The margin of error is quite small:
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 test number 1
   factor a percent: 0.01
   factor b percent: 0.02
@@ -211,7 +219,7 @@ We're given two algebraically equivalent functions that nevertheless produce dif
 
 Here are the two functions:
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (par1 r1 r2)
   (div-interval (mul-interval r1 r2)
                 (add-interval r1 r2)))
@@ -224,7 +232,7 @@ Here are the two functions:
 
 And here's my function to test them:
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (exercise2.14 counter limit
                       center1 percent1 step-size1
                       center2 percent2 step-size2)
@@ -248,7 +256,7 @@ And here's my function to test them:
         
 Here are some of the results, which demonstrate that ~par1~, ~par2~ are not equivalent in practice.
 
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 test 1
      r1 percent: 0.01
      r2 percent: 0.02

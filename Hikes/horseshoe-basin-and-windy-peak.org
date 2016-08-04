@@ -1,0 +1,13 @@
+#+OPTIONS: toc:nil
+#+HTML_HEAD: <link href="../css/solarized-dark.css" rel="stylesheet" />
+#+HTML_LINK_HOME: ../index.html
+#+TITLE: Horseshoe Basin and Windy Peak
+2016-05-31
+
+There were many snowfields on the trail.
+
+[[file:../img/HorseshoeBasinandWindyPeak/clouds.jpg]]
+
+Katherine is getting water.
+
+[[file:../img/HorseshoeBasinandWindyPeak/portrait.jpg]]

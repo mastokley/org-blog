@@ -1,8 +1,8 @@
-#+HTML_LINK_UP: ../../index.html
+#+HTML_HEAD: <link href="../../css/solarized-dark.css" rel="stylesheet" />
 #+HTML_LINK_HOME: ../../index.html
 #+TITLE: SICP Section 1.2.2
 * Exercise 1.11
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (f n)
   (if (< n 3)
       n
@@ -32,7 +32,7 @@
 #+END_SRC
 
 * Exercise 1.12
-#+BEGIN_SRC racket
+#+BEGIN_SRC racket -n
 (define (pascalCell r c)
   (cond ((= r 1) 1)
         ((= c 1) 1)

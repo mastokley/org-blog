@@ -1,0 +1,8 @@
+#+OPTIONS: toc:nil
+#+HTML_HEAD: <link href="../css/solarized-dark.css" rel="stylesheet" />
+#+HTML_LINK_HOME: ../index.html
+#+TITLE: About the SICP
+
+2016-05-20
+
+/The Structure and Interpretation of Computer Programs/, also known as the [[https://en.wikipedia.org/wiki/Structure_and_Interpretation_of_Computer_Programs][wizard book]], "is widely considered a classic text in computer science". I started studying from it a few months before the bootcamp at Code Fellows because I thought it would be a good complement to the type of education bootcamps provide. At the bootcamp you learn specific languages, frameworks, and developer tools; the SICP, on the other hand, de-emphasizes syntax as much as possible (not that Scheme has much syntax in the first place!) in order to focus on fundamentals and 'design patterns'. The design patterns are mostly functional, as far as I can tell. That made for another good contrast with the bootcamp, in which we were taught many OO practices and designs.
