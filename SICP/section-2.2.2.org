@@ -1,5 +1,6 @@
 #+HTML_HEAD: <link href="../../css/solarized-dark.css" rel="stylesheet" />
 #+HTML_LINK_HOME: ../../index.html
+#+OPTIONS: toc:1
 #+TITLE: SICP Section 2.2.2
 * Exercise 2.24
 #+BEGIN_SRC racket -n
