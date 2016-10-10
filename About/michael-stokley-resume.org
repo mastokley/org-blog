@@ -12,7 +12,7 @@ Software developer. I'm patient enough to take difficult projects seriously, and
 
 * Technical Skills
 ** Proficient
-Python, Django, Pyramid, Git, SQL, HTML/CSS, Relational Database Theory, Unix systems, Shell Scripting, Org-mode, Scheme
+Python, Django, Pyramid, Git, SQL, HTML/CSS, Unix systems, Shell Scripting, Org-mode, Scheme
 
 ** Familiar
 JavaScript, jQuery, AWS Deployment, Heroku Deployment, Ansible, PostgreSQL, nginx, Gunicorn

@@ -5,9 +5,9 @@
 #+BEGIN_SRC racket -n
 (define (cubic a b c)
   (λ (x) (+ (cube x)
-                 (* a (square x))
-                 (* b x)
-                 c)))
+            (* a (square x))
+            (* b x)
+            c)))
 #+END_SRC
 * Exercise 1.41
 #+BEGIN_SRC racket -n
