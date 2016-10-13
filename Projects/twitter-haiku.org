@@ -4,11 +4,13 @@
 #+TITLE: Twitter Haiku
 2016-06-06
 
-The premise! - I'm going to get a handful of tweets for a given hashtag, determine how many syllables there are in each tweet, and produce a haiku poem out of one or more tweets. Best case scenario, the poem is thematically consistent (because each tweet shares a common hashtag) and interesting because of the juxtaposition between individually-authored tweets.
+Here's the premise. I'm going to get a handful of tweets for a given hashtag, determine how many syllables there are in each tweet, and produce a haiku poem out of one or more tweets. Best case scenario, the poem is thematically consistent (because each tweet shares a common hashtag) and interesting because of the juxtaposition between individually-authored tweets.
 
 This is a project I started thinking about before the bootcamp. I remember trying to research it and get a basic frame of reference. I ran into two general suggestions. One, people (mostly Twitter, actually) recommended that I learn and use the Twitter API, which would also require registering an account on Twitter, registering that particular app, and authenticating whenever the app interacted with the API. Two, I was made aware of the idea of 'tokenizing' the tweets into words, whose syllables could then be counted.
 
-Coming back to the project afterwards, I was not too enthusiastic about the prospect of learning another idiosyncratic API. There are two or maybe three things I want to do that require interacting with Twitter. One, get trending hashtags. Two, get tweets associated with a given hashtag, and three potentially post the newly-created haiku as a tweet.
+Coming back to the project afterwards, I was not too enthusiastic about the prospect of learning another idiosyncratic API. There are two or maybe three things I want to do that require interacting with Twitter. One, get trending hashtags. Two, get tweets associated with a given hashtag, and three, potentially post the newly-created haiku as a tweet.
+
+I'm going to use a 'literate programming' approach. Instead of code with comments here and there explaining the code, you'll see discussion and code interjected as necessary, in the order that it makes sense (from a human perspective). For example, you'll see import statements throughout instead of consolidated at the top of a single script.
 
 * Getting trends (trending hashtags)
 Now, if you point your browser at http://twitter.com/search-home, and you enable JavaScript, they'll show you the trending hashtags right there. In the picture below, you can see I'm not authenticated:
@@ -19,24 +21,21 @@ However, the trends are not included in the http response to the get request to 
 
 It took some poking around the Firefox developer console to figure this out. It turns out they are put there by a JS script that gets them from http://twitter.com/i/trends. (The http response to that request will give you the trending hashtags as JSON, which the Python requests library is only too happy to convert for you.)
 
-#+BEGIN_SRC python
-import random
+#+BEGIN_SRC python -n
 import requests
 from bs4 import BeautifulSoup
-from nltk.corpus import cmudict
+
 TRENDS_URL = 'http://twitter.com/i/trends'
 TRENDS_CLASS = 'trend-name'
-TWEETS_CLASS = 'tweet-text'
-
 
 def get_trends():
     """Return a list of trending hashtags."""
     html = requests.get(TRENDS_URL).json()['module_html']
     soup = BeautifulSoup(html, 'html.parser')
     elements = soup.findAll(class_=TRENDS_CLASS)
-    return [t.text for t in elements if t.text[0] == '#']
+    return (t.text for t in elements if t.text[0] == '#')
 
-trends = get_trends()
+trends = list(get_trends())
 print(trends)
 #+END_SRC
 
@@ -44,19 +43,23 @@ print(trends)
 [u'#StateOfWomen', u'#DolanTwinsNewVideo', u'#LGBTQHatesTrumpParty', u'#BB18', u'#5sosfansbreaktheinternet']
 #+END_SRC
 
+Note the generator expression in the return statement. We might not end up using all of the trends - this will yield them up one by one, as needed. You could also use a literal ~yield~, but then you'd lose the cute map/filter list comphrehension syntax.
+
 * Getting tweets
 Now that we have our trends, we can grab a set of tweets pretty easily with a simple http get to https://twitter.com/hashtag/ThisIsTheHashtag:
 
 #+BEGIN_SRC python
+TWEETS_CLASS = 'tweet-text'
+
 def get_tweets(hashtag):
     stub = 'https://twitter.com/hashtag'
     url = '/'.join([stub, hashtag.strip('#')])
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
     elements = soup.findAll(class_=TWEETS_CLASS)
-    return [t.text for t in elements]
+    return (t.text for t in elements)
 
-tweets = get_tweets(trends[0])
+tweets = list(get_tweets(trends[0]))
 print(tweets)
 #+END_SRC
 
@@ -70,11 +73,16 @@ For a given tweet, we're going to want to count the syllables. I went back and f
 Here is the brute force approach.
 
 #+BEGIN_SRC python -n
+from nltk.corpus import cmudict
+
+DICT = cmudict.dict()
 
 def count_syllables(word):
     """Return count of syllables for given English word."""
-    d = cmudict.dict()
-    return sum(1 for s in d[word.lower()][0] if s[-1].isdigit())
+    try:
+        return sum(1 for s in DICT[word.lower()][0] if s[-1].isdigit())
+    except KeyError:
+        return 0  # not ideal
 
 print(count_syllables('potato'))
 #+END_SRC
@@ -83,52 +91,50 @@ print(count_syllables('potato'))
 3
 #+END_SRC
 
-~d~ is a dictionary whose keys are lowercase words and whose values are lists of lists of pronunciations; ~d[word.lower()][0]~ resolves to ~[u'P', u'AH0', u'T', u'EY1', u'T', u'OW2']~. I suppose if there were more than one way of pronouncing 'potato', we'd get more than one element in the outer list. The numbers 0, 1, or 2 that are appended to vowels indicate stress.
+~d~ is a dictionary whose keys are lowercase words and whose values are lists of lists of pronunciations; ~d['potato'][0]~ resolves to ~[u'P', u'AH0', u'T', u'EY1', u'T', u'OW2']~. I suppose if there were more than one way of pronouncing 'potato', we'd get more than one element in the outer list. The numbers 0, 1, or 2 that are appended to vowels indicate stress.
+
+(Originally, I instantiated the dictionary in the function. Turns out it takes a long time. Better to instantiate it once as a 'constant'.)
 
 In [[file:../SICP/section-2.2.3.html][section 2.2.3]] of the SICP, 'Sequences as Conventional Interfaces', we're encouraged to 'concentrate on the "signals" that flow from one stage in the process to the next'. The better we're able to analogize our particular problem as a stream of signals, the easier it be will be to design a solution - in particular, a solution that makes use of ~enumerate~, ~filter~, ~map~, and ~accumulate~.
 
-Line 4, above, is a great example of this kind of approach. To find count the number of syllables, first we /enumerate/ the word into a stream of... 'phonemes'. Then we /filter/ the stream to remove the consonants. After that, we're using /map/ to return 1 for every vowel (in this case, each vowel counts as one syllable). Lastly, we /accumulate/ the stream into a sum.
+Line 4, above, is a great example of this kind of approach. To find count the number of syllables, first we enumerate the word into a stream of... 'phonemes'. Then we filter the stream to remove the consonants. After that, we're using map to return 1 for every vowel (in this case, each vowel counts as one syllable). Lastly, we accumulate the stream into a sum.
 
 * Tokenizing the tweets
 
 Pretty straightforward. I'm using a tokenizer that is specifically built to handle tweets:
 
 #+BEGIN_SRC python
+from nltk import TweetTokenizer
+
+TOKENIZER = TweetTokenizer()
+
 def get_tokens(tweet):
     """Clean and tokenize tweets."""
-    print(u'Tokenizing\t{}'.format(tweet))
-    tokenizer = TweetTokenizer()
-    return tokenizer.tokenize(tweet)
+    return TOKENIZER.tokenize(tweet)
 #+END_SRC
 
 * Forming the haiku
 
-to be continued...
-
-#+BEGIN_COMMENT
+Here's an initial stab. 
 
 #+BEGIN_SRC python
 def form_haiku():
-    hashtag = random.choice(get_trends())
-    tweets = get_tweets(hashtag)
-    for tweet in tweets:
-        print('tweet: {}'.format(tweet))
-        print('syllables: {}'.format(count_syllables(tweet)))
-    # haiku = []
-    # while not haiku:
-        # print('enter while loop')
-        # print(haiku)
-        # hashtag = random.choice(get_trends())
-        # print(hashtag)
-        # tweets = get_tweets(hashtag)
-        # verses = [3] # verses = [5, 7, 5]
-        # for tweet in tweets:
-            # if verses and count_syllables(tweet) == verses[0]:
-                # haiku.append(tweet)
-                # print('appended {}'.format(tweet))
-                # verses.pop(0)
-                # print('verses remaining: {}'.format(verses))
-    # return hashtag, haiku
+    hashtags = get_trends()
+    for hashtag in hashtags:
+        tweets = get_tweets(hashtag)
+        verses_to_write = {0: 5, 1: 7, 2: 5}
+        haiku = ['' for v in verses_to_write]
+        for tweet in tweets:
+            syllable_count = sum(count_syllables(t) for t in get_tokens(tweet))
+            for k, v in verses_to_write.items():
+                if v == syllable_count:
+                    haiku[k] = tweet
+                    del verses_to_write[k]
+                    break
+            if not verses_to_write:
+                return '\n'.join(haiku)
 #+END_SRC
 
-#+END_COMMENT
+I had a difficult time formulating the inner and outer loops. The inner loop takes a set of tweets and attempts to identify them as valid verses. The outer loop takes the set of hashtags and attempts to use associated tweets to form a haiku. It could probably benefit from some decomposition.
+
+There might also be a better way of keeping track of the verses, both whether or not they've been written or unwritten, and how many syllables they should be, and their line number in the poem. Perhaps you'd want to write a poem or a verse class... or maybe that would be overkill.
