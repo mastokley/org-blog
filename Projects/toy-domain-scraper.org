@@ -104,7 +104,7 @@ def scrape(root_url):
 
 
 if __name__ == '__main__':
-    scrape(*sys.argv[1:])
+    scrape(*sys.argv[1])
 #+END_SRC
 
 [fn:1] I attempted to rewrite the above using fewer French/latinate words, for fun. Many of the latinate words are technical jargon that can't easily be replaced. (For example: 'traversal', 'generator', 'absolute', 'relative', 'script', 'library' referring to a module, 'pages' referring to webpages, 'code', 'memory'.) The Germans weren't known for their books, I guess.

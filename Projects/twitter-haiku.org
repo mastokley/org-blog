@@ -93,7 +93,7 @@ print(count_syllables('potato'))
 
 ~d~ is a dictionary whose keys are lowercase words and whose values are lists of lists of pronunciations; ~d['potato'][0]~ resolves to ~[u'P', u'AH0', u'T', u'EY1', u'T', u'OW2']~. I suppose if there were more than one way of pronouncing 'potato', we'd get more than one element in the outer list. The numbers 0, 1, or 2 that are appended to vowels indicate stress.
 
-(Originally, I instantiated the dictionary in the function. Turns out it takes a long time. Better to instantiate it once as a 'constant'.)
+(Originally, I instantiated the dictionary in the function. Turns out it takes a long time.)
 
 In [[file:../SICP/section-2.2.3.html][section 2.2.3]] of the SICP, 'Sequences as Conventional Interfaces', we're encouraged to 'concentrate on the "signals" that flow from one stage in the process to the next'. The better we're able to analogize our particular problem as a stream of signals, the easier it be will be to design a solution - in particular, a solution that makes use of ~enumerate~, ~filter~, ~map~, and ~accumulate~.
 
