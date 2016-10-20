@@ -8,14 +8,50 @@
 | [[http://michaelstokley.com][michaelstokley.com]]         |   | [[https://github.com/mastokley][github.com/mastokley]] |   | [[https://linkedin.com/in/mastokley][linkedin.com/in/mastokley]] |
 
 * Profile
-Software developer. I'm patient enough to take difficult projects seriously, and impatient enough to automate tedious, needlessly-manual projects. In my previous accounting position, I greatly exceeded expectations by teaching myself SQL and relational database theory in order to automate the vast majority of my data entry / data quality tasks (and avoid using a cumbersome GUI). I've been learning new languages and developer tools ever since.
+Software developer. I'm patient enough to take difficult projects seriously, and
+impatient enough to automate tedious, needlessly-manual work. In my previous
+accounting position, I greatly exceeded expectations by teaching myself SQL and
+relational database theory in order to automate the vast majority of my data
+entry / data quality tasks (and avoid using a cumbersome GUI). Since then, I
+spent two years studying math, computer science, and statistics at North Seattle
+College, attended Code Fellows' Python Development Intensive (taught by esteemed
+pythonista Cris Ewing), and have independently studied the classic textbook /The
+Structure and Interpretation of Computer Programs/. Recently I helped to
+co-found a local big data / nlp startup, and have been working as a freelance
+web developer.
 
 * Technical Skills
 ** Proficient
-Python, Django, Pyramid, Git, SQL, HTML/CSS, Unix systems, Shell Scripting, Org-mode, Scheme
+Python, Django, Django REST Framework, Pyramid, Git, SQL, HTML/CSS,
+JavaScript/jQuery, Unix systems, Shell Scripting, Org-mode, Regular Expressions
 
 ** Familiar
-JavaScript, jQuery, AWS Deployment, Heroku Deployment, Ansible, PostgreSQL, nginx, Gunicorn
+AWS Deployment, Heroku Deployment, Ansible, PostgreSQL, Nginx, Gunicorn, Scheme,
+Sed
+* Experience
+** Red Mountain Software, Seattle, WA
+*** Freelance Web Developer, /2016.08 - present/
+Ongoing work to design, build, and test internal management application
+according to client specification. App built with Django and PostgreSQL, with
+jQuery on the front as needed.
+  - Designed and implemented database schema
+  - Wrote models, views, and templates
+  - Wrote a method to display arbitrary model fields (including reverse
+    relationships) for arbitrary models
+** Sternshus, Seattle, WA
+*** Co-founding Full Stack Developer, /2016.07 - 2016.09/
+Provided front-end solutions in the context of rapidly changing business
+requirements. Worked primarily in Webflow, Django, and MySQL. I am most proud of
+having written sed and python scripts to automate merging of Webflow files into
+the larger Django project.
+** Recology CleanScapes, Seattle, WA
+*** AR Specialist, /2012.04 - 2015.04/
+- Wrote and maintained a library of accurate, sophisticated SQL queries to capture evolving data inconsistencies; these queries eliminated 37.5 labor hours per month despite a 126% increase in customer accounts over a two year period
+- Designed database reports for internal and external customers, such as government officials and senior management
+- Delegated data entry / data revision tasks
+- Collaborated with operations, data quality, payment processing, and customer service teams to analyze and improve processes as new city contracts were won
+# - Oversaw and coordinated all billing and collections activities
+# - Closed the month on a deadline
 
 * Projects
 #+ATTR_HTML: :border 0 :rules none
@@ -29,37 +65,13 @@ JavaScript, jQuery, AWS Deployment, Heroku Deployment, Ansible, PostgreSQL, ngin
 |         | Straightforward front-end JavaScript project to practice DOM manipulation and third-party API consumption.                                                                                                                              |
 | 2015.12 | *HTML Generator*, [[https://michaelstokley.com/Projects/HTML-generator][michaelstokley.com/Projects/HTML-generator]]                                                                                                                                                                            |
 |         | Converts a lightweight, concise markdown into prettified, verbose HTML. Written in JavaScript.                                                                                                                                          |
-* Experience
-** Sternshus, Seattle, WA
-*** Co-founding Full Stack Developer, /2016.07 - present/
-Full stack web development and dev ops for big data startup.
-
-** Recology CleanScapes, Seattle, WA
-*** AR Specialist, /2012.04 - 2015.04/
-- Wrote and maintained a library of accurate, sophisticated SQL queries to capture evolving data inconsistencies; these queries eliminated 37.5 labor hours per month despite a 126% increase in customer accounts over a two year period
-- Designed database reports for internal and external customers, such as government officials and senior management
-- Delegated data entry / data revision tasks
-- Collaborated with operations, data quality, payment processing, and customer service teams to analyze and improve processes as new city contracts were won
-# - Oversaw and coordinated all billing and collections activities
-# - Closed the month on a deadline
-
-*** Data Quality Specialist, /2011.07 - 2012.04/
-Dispatch, data entry, and customer service for the graveyard shift
-# - Reviewed truck video for misses and accidents
-# - Illegal dumping reporting for SPU
-# - Various clerical, reporting, and recordkeeping duties
-# ** Kojen English Language School in Taipei, Taiwan
-# *** ESL Teacher, /2009.10 - 2010.10/
-# /Taught high-intensity ESL classes for students aged 5 - 18/
-# - Resolved classroom conflicts
-# - Planned lessons and coordinated lesson plans with co-teachers
-# - Prepared end-of-class student grade reports
 
 * Education
 ** Code Fellows, Seattle, WA
 *Certificate*, /2016/ \\
-Advanced Python Development
-
+Advanced Python development, with emphasis on test driven development, pair
+programming, agile methodologies, version control, and basic data structure and
+algorithms
 ** North Seattle College, Seattle, WA
 *Coursework*, /2012 - 2014/ \\
 Math, Statistics, and Computer Science

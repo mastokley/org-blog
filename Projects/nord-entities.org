@@ -1,0 +1,79 @@
+#+OPTIONS: toc:nil
+#+HTML_HEAD: <link href="../css/solarized-dark.css" rel="stylesheet" />
+#+HTML_LINK_HOME: ../index.html
+#+TITLE: Nord Entities
+2016-10-19
+
+The [[https://nordglobal.net][Non-Ordinary Reality Database]] (NORD) crawls the web for accounts of dreams, meditations, and other non-ordinary experiences.
+
+I'm going to attempt to perform "[[https://en.wikipedia.org/wiki/Named-entity_recognition][named entity recognition]]" on these accounts. My goal is to become more familiar with the nltk, more familiar with basic nlp procedures, and ideally gain some insight into ultimately what you might do with the named entities once you had them.
+
+Let's get a handful of these narratives. What url should we hit? I played around with the search page at https://nordglobal.net/search. Type 'cats' into the search bar and you are redirected to https://nordglobal.net/search?query=cats&sort=date&order=desc&baseline=all.
+
+#+BEGIN_SRC python -n
+import requests
+
+STUB = 'http://api.nordglobal.net/api'
+
+endpoint = '/v1/search?query=cats&sort=date&order=desc&size=10'
+response = requests.get(''.join([STUB, endpoint]))
+if response.status_code != 200:
+    raise ValueError('Invalid api endpoint.')
+
+print(response.json().keys())
+#+END_SRC
+
+#+BEGIN_SRC python
+dict_keys(['took', 'max_date', 'counts', 'min_date', 'narratives', 'aggregations', 'hits'])
+#+END_SRC
+
+We get a json object. It contains multiple narratives and some metadata about those narratives.
+
+If we look into ~response.json()['narratives'][n]['body']~, we'll get the raw text for the /nth/ narrative.
+
+Before we get started extracting entities, we'll need to do a fair amount of preprocessing.
+
+First, we'll want to tokenize the raw text into sentences. I'm going to use the nltk-recommended sentence tokenizer. (I understand you can also train your own tokenizers. This would be supervised learning, and would require annotated data.)
+
+Then, we'll tokenize the sentences into words. Lastly, we'll tag each word with a part of speech. For both of these tasks, I'll again use off-the-shelf nltk tools. (I assume the computational linguists who built the nltk trained the word tokenizer and the part-of-speech tagger tools with vast amounts of laboriously annotated data.)
+
+#+BEGIN_SRC python -n
+import nltk
+
+def preprocess(text):
+    sentences = nltk.sent_tokenize(text)
+    word_tokenized_sentences = (nltk.word_tokenize(s) for s in sentences)
+    return (nltk.pos_tag(w) for w in word_tokenized_sentences)
+#+END_SRC
+
+Notice this function uses two generator expressions. The ~word_tokenized_sentences~ generator object will produce one list of strings for every sentence in the ~sentences~. Like this:
+
+#+BEGIN_SRC python -n
+text = response.json()['narratives'][0]['body']
+sentences = nltk.sent_tokenize(text)
+word_tokenized_sentences = (nltk.word_tokenize(s) for s in sentences)
+word_tokenized_sentence = next(word_tokenized_sentences)
+print(word_tokenized_sentence)
+#+END_SRC
+
+#+BEGIN_SRC python
+['Walking', 'south', 'on', '14th', 'St.', ',', 'just', 'south', 'of', 'Pennsylvania', 'Ave.', 'Street', 'was', 'very', 'muddy', '.']
+#+END_SRC
+
+Keeping track of the structure of these objects as they are passed from function to function is key. Each step is simple, but taken together it can be work, mental work, to understand what's going on. I like to make it easy for myself by working through the steps manually, in an REPL. In my opinion, this is very much in the spirit of programming. Encapsulation, function decomposition, abstraction in general: these are all strategies of reducing or spreading out the mental load that programming requires.
+
+It's interesting to note that the nltk sentence tokenizer failed, in this case, to properly segment these sentences. I suppose the period in 'Ave.' usually doesn't mean the sentence is terminated.
+
+But to return to my earlier train of thought, I'm using chained generator expressions. The second gen exp will return one list of two-tuples per sentence, like this:
+
+#+BEGIN_SRC python -n
+processed = preprocess(text)
+tagged_sentence = next(processed)
+print(tagged_sentence)
+#+END_SRC
+
+#+BEGIN_SRC python
+[('Walking', 'VBG'), ('south', 'NN'), ('on', 'IN'), ('14th', 'CD'), ('St.', 'NNP'), (',', ','), ('just', 'RB'), ('south', 'NN'), ('of', 'IN'), ('Pennsylvania', 'NNP'), ('Ave.', 'NNP'), ('Street', 'NNP'), ('was', 'VBD'), ('very', 'RB'), ('muddy', 'JJ'), ('.', '.')]
+#+END_SRC
+
+I think the only disadvantage to using generator expressions like this is that you have to remember to iterate over them (or ~list()~ them) later. I would be interested in doing some testing to see how much memory you really save.

@@ -9,6 +9,7 @@
      + [[file:Hikes/tuck-and-robin-lakes][Tuck and Robin Lakes]]
    + Projects
      + [[file:Projects/HTML-generator][HTML Generator]]
+     + [[file:Projects/nord-entities][Nord Entities]]
      + [[file:Projects/toy-domain-scraper][Toy Domain Scraper]]
      + [[file:Projects/twitter-haiku][Twitter Haiku]]
      + [[file:Projects/weather-forecast][Weather Forecast]]
