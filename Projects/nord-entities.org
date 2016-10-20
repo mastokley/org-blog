@@ -15,7 +15,7 @@ import requests
 
 STUB = 'http://api.nordglobal.net/api'
 
-endpoint = '/v1/search?query=cats&sort=date&order=desc&size=10'
+endpoint = '/v1/search?query=cats&sort=date&order=desc&baseline=all'
 response = requests.get(''.join([STUB, endpoint]))
 if response.status_code != 200:
     raise ValueError('Invalid api endpoint.')
