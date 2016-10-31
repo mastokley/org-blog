@@ -4,6 +4,8 @@
 #+TITLE: Nord Entities
 2016-10-19
 
+View this project on [[https://github.com/mastokley/nord_entities][github]].
+
 The [[https://nordglobal.net][Non-Ordinary Reality Database]] (NORD) crawls the web for accounts of dreams, meditations, and other non-ordinary experiences.
 
 I'm going to attempt to perform "[[https://en.wikipedia.org/wiki/Named-entity_recognition][named entity recognition]]" on these accounts. My goal is to become more familiar with the nltk, more familiar with basic nlp procedures, and ideally gain some insight into ultimately what you might do with the named entities once you had them.
