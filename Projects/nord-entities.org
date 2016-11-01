@@ -62,9 +62,9 @@ print(word_tokenized_sentence)
 ['Walking', 'south', 'on', '14th', 'St.', ',', 'just', 'south', 'of', 'Pennsylvania', 'Ave.', 'Street', 'was', 'very', 'muddy', '.']
 #+END_SRC
 
-Keeping track of the structure of these objects as they are passed from function to function is key. Each step is simple, but taken together it can be work, mental work, to understand what's going on. I like to make it easy for myself by working through the steps manually, in an REPL. In my opinion, this is very much in the spirit of programming. Encapsulation, function decomposition, abstraction in general: these are all strategies of reducing or spreading out the mental load that programming requires.
+Keeping track of the structure of these objects as they are passed from function to function is key. Each step is simple, but taken together it can be work, mental work, to understand what's going on. I like to make it easy for myself by working through the steps manually, in the REPL. In my opinion, this is very much in the spirit of programming. Encapsulation, function decomposition, abstraction in general: these are all strategies of reducing or spreading out the mental load that programming requires.
 
-It's interesting to note that the nltk sentence tokenizer failed, in this case, to properly segment these sentences. I suppose the period in 'Ave.' usually doesn't mean the sentence is terminated.
+It's interesting to note that the nltk sentence tokenizer failed, in this case, to properly segment these sentences. I suppose the period in 'Ave.' usually doesn't terminate a sentence.
 
 But to return to my earlier train of thought, I'm using chained generator expressions. The second gen exp will return one list of two-tuples per sentence, like this:
 
@@ -78,4 +78,4 @@ print(tagged_sentence)
 [('Walking', 'VBG'), ('south', 'NN'), ('on', 'IN'), ('14th', 'CD'), ('St.', 'NNP'), (',', ','), ('just', 'RB'), ('south', 'NN'), ('of', 'IN'), ('Pennsylvania', 'NNP'), ('Ave.', 'NNP'), ('Street', 'NNP'), ('was', 'VBD'), ('very', 'RB'), ('muddy', 'JJ'), ('.', '.')]
 #+END_SRC
 
-I think the only disadvantage to using generator expressions like this is that you have to remember to iterate over them (or ~list()~ them) later. I would be interested in doing some testing to see how much memory you really save.
+I suppose the disadvantage of using generator expressions like this is that you have to remember to iterate over them (or ~list()~ them), and that you can only iterate over them once. I wonder how much memory you really save compared to using lists, and at what threshold you might decide it actually matters.
