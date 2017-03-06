@@ -6,11 +6,18 @@
 
 View this project on [[https://github.com/mastokley/nord_entities][github]].
 
-The [[https://nordglobal.net][Non-Ordinary Reality Database]] (NORD) crawls the web for accounts of dreams, meditations, and other non-ordinary experiences.
+The [[https://nordglobal.net][Non-Ordinary Reality Database]] (NORD) crawls the web for accounts of dreams,
+meditations, and other non-ordinary experiences.
 
-I'm going to attempt to perform "[[https://en.wikipedia.org/wiki/Named-entity_recognition][named entity recognition]]" on these accounts. My goal is to become more familiar with the [[http:www.nltk.org][nltk]], more familiar with basic nlp procedures, and ideally gain some insight into ultimately what you might do with the named entities once you had them.
+I'm going to attempt to perform "[[https://en.wikipedia.org/wiki/Named-entity_recognition][named entity recognition]]" on these accounts. My
+goal is to become more familiar with the [[http:www.nltk.org][nltk]], more familiar with basic nlp
+procedures, and ideally gain some insight into ultimately what you might do with
+the named entities once you had them.
 
-Let's get a handful of these narratives. What url should we hit? I played around with the search page at https://nordglobal.net/search. Type 'cats' into the search bar and you are redirected to https://nordglobal.net/search?query=cats&sort=date&order=desc&baseline=all.
+Let's get a handful of these narratives. What url should we hit? I played around
+with the search page at https://nordglobal.net/search. Type 'cats' into the
+search bar and you are redirected to
+https://nordglobal.net/search?query=cats&sort=date&order=desc&baseline=all.
 
 #+BEGIN_SRC python -n
 import requests
@@ -29,15 +36,25 @@ print(response.json().keys())
 dict_keys(['took', 'max_date', 'counts', 'min_date', 'narratives', 'aggregations', 'hits'])
 #+END_SRC
 
-We get a json object. It contains multiple narratives and some metadata about those narratives.
+We get a json object. It contains multiple narratives and some metadata about
+those narratives.
 
-If we look into ~response.json()['narratives'][n]['body']~, we'll get the raw text for the /nth/ narrative.
+If we look into ~response.json()['narratives'][n]['body']~, we'll get the raw
+text for the /nth/ narrative.
 
-Before we get started extracting entities, we'll need to do a fair amount of preprocessing.
+Before we get started extracting entities, we'll need to do a fair amount of
+preprocessing.
 
-First, we'll want to tokenize the raw text into sentences. I'm going to use the nltk-recommended sentence tokenizer. (I understand you can also train your own tokenizers. This would be supervised learning, and would require annotated data.)
+First, we'll want to tokenize the raw text into sentences. I'm going to use the
+nltk-recommended sentence tokenizer. (I understand you can also train your own
+tokenizers. This would be supervised learning, and would require annotated
+data.)
 
-Then, we'll tokenize the sentences into words. Lastly, we'll tag each word with a part of speech. For both of these tasks, I'll again use off-the-shelf nltk tools. (I assume the computational linguists who built the nltk trained the word tokenizer and the part-of-speech tagger tools on vast amounts of laboriously annotated data.)
+Then, we'll tokenize the sentences into words. Lastly, we'll tag each word with
+a part of speech. For both of these tasks, I'll again use off-the-shelf nltk
+tools. (I assume the computational linguists who built the nltk trained the word
+tokenizer and the part-of-speech tagger tools on vast amounts of laboriously
+annotated data.)
 
 #+BEGIN_SRC python -n
 import nltk
@@ -48,7 +65,9 @@ def preprocess(text):
     return (nltk.pos_tag(w) for w in word_tokenized_sentences)
 #+END_SRC
 
-Notice this function uses two generator expressions. The ~word_tokenized_sentences~ generator object will produce one list of strings for every sentence:
+Notice this function uses two generator expressions. The
+~word_tokenized_sentences~ generator object will produce one list of strings for
+every sentence:
 
 #+BEGIN_SRC python -n
 text = response.json()['narratives'][0]['body']
@@ -62,11 +81,21 @@ print(word_tokenized_sentence)
 ['Walking', 'south', 'on', '14th', 'St.', ',', 'just', 'south', 'of', 'Pennsylvania', 'Ave.', 'Street', 'was', 'very', 'muddy', '.']
 #+END_SRC
 
-Keeping track of the structure of these objects as they are passed from function to function is key. Each step is simple, but taken together it can be work, mental work, to understand what's going on. I like to make it easy for myself by working through the steps manually, in the REPL. In my opinion, this is very much in the spirit of programming. Encapsulation, function decomposition, abstraction in general: these are all strategies of reducing or spreading out the mental load that programming requires.
+#+BEGIN_COMMENT
+Keeping track of the structure of these objects as they are passed from function
+to function is key. Each step is simple, but taken together it can be work,
+mental work, to understand what's going on. I like to make it easy for myself by
+working through the steps manually, in the REPL. In my opinion, this is very
+much in the spirit of programming. Encapsulation, function decomposition,
+abstraction in general: these are all strategies of reducing or spreading out
+the mental load that programming requires.
+#+END_COMMENT
 
-Looks like the tokenizer failed, in this case, to properly segment these sentences. I suppose the period in 'Ave.' usually doesn't terminate a sentence.
+Looks like the tokenizer failed, in this case, to properly segment these
+sentences. I suppose the period in 'Ave.' usually doesn't terminate a sentence.
 
-But to return to my earlier train of thought, I'm using chained generator expressions. The second gen exp will return one list of two-tuples per sentence, like this:
+I'm using chained generator expressions. The second gen exp will return one list
+of two-tuples per sentence, like this:
 
 #+BEGIN_SRC python -n
 processed = preprocess(text)
@@ -78,11 +107,20 @@ print(tagged_sentence)
 [('Walking', 'VBG'), ('south', 'NN'), ('on', 'IN'), ('14th', 'CD'), ('St.', 'NNP'), (',', ','), ('just', 'RB'), ('south', 'NN'), ('of', 'IN'), ('Pennsylvania', 'NNP'), ('Ave.', 'NNP'), ('Street', 'NNP'), ('was', 'VBD'), ('very', 'RB'), ('muddy', 'JJ'), ('.', '.')]
 #+END_SRC
 
-The disadvantage of using generator expressions like this is that you have to remember to iterate over them (or ~list()~ them), and that you can only iterate over them once. I wonder how much memory you really save compared to using lists, and at what threshold you might decide it actually matters.
+We can now feed these tagged sentences into a 'chunker'. 'Chunking' a sentence
+adds another layer of structure by grouping tagged words into phrases. We'll use
+what's called 'noun phrase chunking', which is especially well suited to our
+ultimate task of identifying entities. (Read more about this topic in [[http://www.nltk.org/book/ch07.html][Chapter 7]]
+of [[http://www.nltk.org/book/][Natural Language Processing with Python]].)
 
-At any rate, we can now feed these tagged sentences into a 'chunker'. 'Chunking' a sentence adds another layer of structure by grouping tagged words into phrases. We'll use what's called 'noun phrase chunking', which is especially well suited to our ultimate task of identifying entities. (Read more about this topic in [[http://www.nltk.org/book/ch07.html][Chapter 7]] of [[http://www.nltk.org/book/][Natural Language Processing with Python]].)
+The disadvantage of using generator expressions like this is that you have to
+remember to iterate over them (or ~list()~ them), and that you can only iterate
+over them once. I wonder how much memory you really save compared to using
+lists, and at what threshold you might decide it actually matters.
  
-As before, I'm going to use a standard, rules-based tool instead of training my own. As far as I can tell, the 'named entity' chunker, ~nltk.chunk.ne_chunker~, is an NP-chunker.
+As before, I'm going to use an off-the-shelf tool instead of training my own. As
+far as I can tell, the 'named entity' chunker, ~nltk.chunk.ne_chunker~, is an
+NP-chunker.
 
 #+BEGIN_SRC python -n
 chunked = nltk.chunk.ne_chunk(tagged_sentence)
@@ -109,10 +147,22 @@ chunked.pprint()
   ./.)
 #+END_SRC
 
-By default, the chunker tries to classify entities into groups like 'organization', 'person', or 'date'. It classified 'Pennsylvania' as a geopolitical entity (GPE), when it should have grouped 'Pennsylvania' and 'Ave.' together as a noun phrase; it failed to identify the tokens '14th' and 'St.' as a noun phrase; and lastly, it failed to correctly classify 'Street'.
+By default, the chunker tries to classify entities into groups like
+'organization', 'person', or 'date'. It classified 'Pennsylvania' as a
+geopolitical entity (GPE), when it should have grouped 'Pennsylvania' and 'Ave.'
+together as a noun phrase; it failed to identify the tokens '14th' and 'St.' as
+a noun phrase; and lastly, it failed to correctly classify 'Street'.
 
-Since it's (anecdotally) failing so badly, I'm inclined to set aside the entity classification with the optional parameter ~binary=True~.
+I think more and more that these nlp processes are unreliable, especially the
+later stage processes like chunking. I think that the promise of nlp (if I've
+understood it correctly) - that a machine will read text and make sense of it
+without help - is overstated.
 
-#+BEGIN_SRC python
-chunked = nltk.chunk.ne_chunk(tagged_sentence, binary=True)
-#+END_SRC
+I think you'd need a set of domain specific annotated data to train on, or your
+own regex-like grammatical rules. I'm reluctant to try and build those because
+I'm not a linguist, and because I assume the rules should be as generic as
+possible, but maybe that's not the assumed use case. Maybe it's better to think
+of nlp as a more sophisticated kind of regex, good for clearly defined
+questions, as opposed to as a set of insights and rules about how written
+english works (which would be good for open ended questions about the overall
+meaning or significance of a text).

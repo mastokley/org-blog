@@ -5,7 +5,8 @@
 * Exercise 2.33
 From the book:
 #+BEGIN_QUOTE
-Fill in the missing expressions to complete the following definitions of some basic list-manipulation operations as accumulations:
+Fill in the missing expressions to complete the following definitions of some
+basic list-manipulation operations as accumulations:
 
 #+BEGIN_SRC racket -n
 (define (map p sequence)
@@ -17,12 +18,15 @@ Fill in the missing expressions to complete the following definitions of some ba
 #+END_SRC
 #+END_QUOTE
 ** map
-~accumulate~ returns one expression; ~map~ should return a list. I'll use ~cons~ to build that list.
+~accumulate~ returns one expression; ~map~ should return a list. I'll use ~cons~
+to build that list.
 #+BEGIN_SRC racket -n
 (define (map p sequence)
   (accumulate (λ (x y) (cons (p x) y)) null sequence))
 #+END_SRC
-The anonymous function takes two parameters because ~accumulate~ performs the function ~p~ on two operands (the ~car~ and the as-yet undetermined accumulation of the ~cdr~).
+The anonymous function takes two parameters because ~accumulate~ performs the
+function ~p~ on two operands (the ~car~ and the as-yet undetermined accumulation
+of the ~cdr~).
 
 ** append
 Here's ~append~ defined in terms of ~accumulate~:
@@ -33,7 +37,10 @@ Here's ~append~ defined in terms of ~accumulate~:
 As a parameter of ~accumulate~, ~seq1~ is the sequence and ~seq2~ is 'init'.
 
 ** length
-Here is ~length~. It doesn't matter what the ~car~ or the ~cdr~ of the sequence are, it only matters whether or not ~cdr~ is null. If the ~cdr~ is not null, return the sum of 1 and ~(length (cdr sequence))~. The second paramter passed to our anonymous function can be considered ~(length (cdr sequence))~.
+Here is ~length~. It doesn't matter what the ~car~ or the ~cdr~ of the sequence
+are, it only matters whether or not ~cdr~ is null. If the ~cdr~ is not null,
+return the sum of 1 and ~(length (cdr sequence))~. The second paramter passed to
+our anonymous function can be considered ~(length (cdr sequence))~.
 #+BEGIN_SRC racket -n
 (define (length sequence)
   (accumulate (λ (x y) (+ 1 y)) 0 sequence))
@@ -41,15 +48,21 @@ Here is ~length~. It doesn't matter what the ~car~ or the ~cdr~ of the sequence 
 * Exercise 2.34
 Quoting the text:
 #+BEGIN_QUOTE
-Evaluating a polynomial in /x/ at a given value of /x/ can be formulated as an accumulation. We evaluate the polynomial
+Evaluating a polynomial in /x/ at a given value of /x/ can be formulated as an
+accumulation. We evaluate the polynomial
 
 /a_{n}x^n + a_{n-1}x^{n-1} + ... + a_{1}x + a_{0}/
 
-using a well-known algorithm called Horner's rule, which structures the computation as
+using a well-known algorithm called Horner's rule, which structures the
+computation as
 
 /( ... (a_{n}x + a_{n-1})x + ... + a_{1})x + a_0/
 
-In other words, we start with /a_{n}/, multiply by /x/, add /a_{n-1}/, multiply by /x/, and so on, until we reach /a_{0}/. Fill in the following template to produce a procedure that evaluates a polynomial using Horner's rule. Assume that the coefficients of the polynomial are arranged in a sequence, from /a_0/ through /a_n/.
+In other words, we start with /a_{n}/, multiply by /x/, add /a_{n-1}/, multiply
+by /x/, and so on, until we reach /a_{0}/. Fill in the following template to
+produce a procedure that evaluates a polynomial using Horner's rule. Assume that
+the coefficients of the polynomial are arranged in a sequence, from /a_0/
+through /a_n/.
 
 #+BEGIN_SRC racket -n
 (define (horner-eval x coefficient-sequence)
@@ -70,7 +83,8 @@ My answer:
               0
               coefficient-sequence))
 #+END_SRC
-Why does this work? In my notes, I re-wrote the evaluation of the expression /1 + 3x + 5x^3 + x^5/ at /x = 2/ like this:
+Why does this work? In my notes, I re-wrote the evaluation of the expression
+/1 + 3x + 5x^3 + x^5/ at /x = 2/ like this:
 
 #+BEGIN_SRC racket -n
 (+ (* 1 (expt 3 0))
@@ -81,7 +95,9 @@ Why does this work? In my notes, I re-wrote the evaluation of the expression /1 
    (* 1 (expt 3 5)))
 #+END_SRC
 
-Looking at at now, though - the structure doesn't represent the process ~accumulate~ evolves. Horner's rule is nested and recursive, as opposed to flat and iterative. It might be represented better like this:
+Looking at at now, though - the structure doesn't represent the process
+~accumulate~ evolves. Horner's rule is nested and recursive, as opposed to flat
+and iterative. It might be represented better like this:
 
 #+BEGIN_SRC racket -n
 (+ a_0 (* x (accumulation of remaining terms))) -->
@@ -90,12 +106,16 @@ Looking at at now, though - the structure doesn't represent the process ~accumul
 ...
 #+END_SRC
 * Exercise 2.35
-Here we are asked to redefine the ~count-leaves~ function from section 2.2.2 as an accumulation, given this partial definition.
+Here we are asked to redefine the ~count-leaves~ function from section 2.2.2 as
+an accumulation, given this partial definition.
 #+BEGIN_SRC racket -n
 (define (count-leaves t)
   (accumulate <??> <??> (map <??> <??>)))
 #+END_SRC
-Thinking in terms of the signal-processing analogy, we'd need to take a given tree, enumerate the leaves (that is, flatten the tree), transform the leaves into values of 1, then count them up. We already have a flatten-tree function from section 2.2.3 (and before that, from exercise 2.28 in section 2.2.2).
+Thinking in terms of the signal-processing analogy, we'd need to take a given
+tree, enumerate the leaves (that is, flatten the tree), transform the leaves
+into values of 1, then count them up. We already have a flatten-tree function
+from section 2.2.3 (and before that, from exercise 2.28 in section 2.2.2).
 
 Here's a stab at it:
 #+BEGIN_SRC racket -n
@@ -113,9 +133,15 @@ Fill in the missing expressions in the following definition of ~accumulate-n~:
             (accumulate-n op init <??>))))
 #+END_SRC
 #+END_QUOTE
-The first thing I want to do here is produce a list of the ~car~ of each of the elements in ~seqs~. Seems like an obvious choice is ~car~ and then ~cdr~ later on.
+The first thing I want to do here is produce a list of the ~car~ of each of the
+elements in ~seqs~. Seems like an obvious choice is ~car~ and then ~cdr~ later
+on.
 
-Originally, ~(map car seqs)~ where ~seqs~ was defined as ~((1 2 3) (4 5 6) (7 8 9) (10 11 12))~ returned ~(1 4 7 10 11 12)~. It should have returned ~(1 4 7 10)~. It took me quite a long time to realize this was because I had (incorrectly) redefined ~map~ above as part of exercise 2.33. Once that was fixed, I was all set.
+Originally, ~(map car seqs)~ where ~seqs~ was defined as ~((1 2 3) (4 5 6) (7
+8 9) (10 11 12))~ returned ~(1 4 7 10 11 12)~. It should have returned ~(1 4 7
+10)~. It took me quite a long time to realize this was because I had
+(incorrectly) redefined ~map~ above as part of exercise 2.33. Once that was
+fixed, I was all set.
 #+BEGIN_SRC racket -n
 (define (accumulate-n op init seqs)
   (if (null? (car seqs))
@@ -139,22 +165,33 @@ We're asked to fill in the missing expressions in these related operations:
   (let ((cols (transpose n)))
     (map <??> m)))
 #+END_SRC
-Another side effect of having redefined ~map~ in exercise 2.33 was that ~dot-product~ would not run. Eventually I understood that there is a more general version of ~map~ that will accept any number of equally-long lists as parameters. ~map~ then applies the given operator to each set of elements, i. e. ~(operator (car lst1) (car lst2) ...)~, ~(operator (caar lst1) (caar lst2) ...)~, ....
+Another side effect of having redefined ~map~ in exercise 2.33 was that
+~dot-product~ would not run. Eventually I understood that there is a more
+general version of ~map~ that will accept any number of equally-long lists as
+parameters. ~map~ then applies the given operator to each set of elements, i. e.
+~(operator (car lst1) (car lst2) ...)~, ~(operator (caar lst1) (caar lst2)
+...)~, ....
 
-Without this more general version of ~map~, it wouldn't be at all clear how to define ~dot-product~ (and by extension ~matrix-*-vector~).
+Without this more general version of ~map~, it wouldn't be at all clear how to
+define ~dot-product~ (and by extension ~matrix-*-vector~).
 
-I'm not sure how you'd go about redefining the more general version of ~map~ in terms of an accumulation.
+I'm not sure how you'd go about redefining the more general version of ~map~ in
+terms of an accumulation.
 
-Anyhow, ~map~ is tailor-made for these linear algebra procedures. Here's ~matrix-*-vector~:
+Anyhow, ~map~ is tailor-made for these linear algebra procedures. Here's
+~matrix-*-vector~:
 ** matrix-*-vector
 #+BEGIN_SRC racket -n
 (define (matrix-*-vector m v)
   (map (λ (row) (dot-product v row)) m))
 #+END_SRC
 ** transpose
-~Accumulate~ returns a single argument, but I want a list. A list of lists. I want to take the ~car~ of each sub-list of the matrix and have that become my new first sub-list.
+~Accumulate~ returns a single argument, but I want a list. A list of lists. I
+want to take the ~car~ of each sub-list of the matrix and have that become my
+new first sub-list.
 
-Since I want to accumulate a list, my procedure should use ~cons~. Again, since I want to accumulate a list, my initial operand should be the null list.
+Since I want to accumulate a list, my procedure should use ~cons~. Again, since
+I want to accumulate a list, my initial operand should be the null list.
 #+BEGIN_SRC racket -n
 (define (transpose mat)
   (accumulate-n
@@ -164,9 +201,14 @@ Since I want to accumulate a list, my procedure should use ~cons~. Again, since 
 #+END_SRC
 And it turns out that's all the thinking you have to do about this one!
 
-This is a strategy I find myself using often: without thinking too carefully about the problem, I test my immediate intuition. Sometimes it works, and I move on. When it doesn't, I need to decide whether to double down or not. The longer that goes on, the harder it becomes to extricate myself and put myself in a position to do the abstract thinking to /really/ understand what's going on.
+This is a strategy I find myself using often: without thinking too carefully
+about the problem, I test my immediate intuition. Sometimes it works, and I move
+on. When it doesn't, I need to decide whether to double down or not. The longer
+that goes on, the harder it becomes to extricate myself and put myself in a
+position to do the abstract thinking to /really/ understand what's going on.
 
-Reminds me of the saying, "The sooner you start coding, the longer it will take to finish."
+Reminds me of the saying, "The sooner you start coding, the longer it will take
+to finish."
 ** matrix-*-matrix
 My solution:
 #+BEGIN_SRC racket -n
@@ -177,7 +219,8 @@ My solution:
 * Exercise 2.38
 ** Evaluate ~(fold-right / 1 (list 1 2 3))~
 
-I'd interpret this as ~(1 / remainder)~, then ~(1 / (2 / remainder))~, then ~(1 / (2 / (3 / remainder)))~, then ~(1 / (2 / (3 / 1)))~.
+I'd interpret this as ~(1 / remainder)~, then ~(1 / (2 / remainder))~, then ~(1
+/ (2 / (3 / remainder)))~, then ~(1 / (2 / (3 / 1)))~.
 
 To put it another way:
 #+BEGIN_SRC racket -n
@@ -189,15 +232,22 @@ To put it another way:
 3/2
 #+END_SRC
 ** Evaluate ~(fold-left / 1 (list 1 2 3))~
-Originally, I thought this was ~(3 / remainder)~, which becomes ~(3 / (2 / remainder))~, then ~(3 / (2 / (1 / remainder)))~, then ~(3 / (2 / (1 / 1)))~, which is 1.5 again. But that can't be right. 
+Originally, I thought this was ~(3 / remainder)~, which becomes ~(3 / (2 /
+remainder))~, then ~(3 / (2 / (1 / remainder)))~, then ~(3 / (2 / (1 / 1)))~,
+which is 1.5 again. But that can't be right.
 
-I looked more closely at the definition of ~fold-left~. ~result~ is initially defined as ~(op initial (car sequence))~, or ~(/ 1 1)~.
+I looked more closely at the definition of ~fold-left~. ~result~ is initially
+defined as ~(op initial (car sequence))~, or ~(/ 1 1)~.
 
-Next iteration, we divide the result by ~(caar sequence)~, or 2, so 1/2. Then 1/2 is our result, so we'd divide that by ~(caaar sequence)~, or 3, so 1/6.
+Next iteration, we divide the result by ~(caar sequence)~, or 2, so 1/2. Then
+1/2 is our result, so we'd divide that by ~(caaar sequence)~, or 3, so 1/6.
 
-The most striking part of this is that the initial term, in this case 1, is used right away, in the outermost expression. I suppose that's opposite of ~fold-right~, where it's used last, in the innermost expression.
+The most striking part of this is that the initial term, in this case 1, is used
+right away, in the outermost expression. I suppose that's opposite of
+~fold-right~, where it's used last, in the innermost expression.
 
-You could also represent it like this, below. It was difficult for me to understand that the order of the elements is not reversed.
+You could also represent it like this, below. It was difficult for me to
+understand that the order of the elements is not reversed.
 
 #+BEGIN_SRC racket -n
 (/ (/ (/ 1 1) 2) 3) -->
@@ -206,9 +256,19 @@ You could also represent it like this, below. It was difficult for me to underst
 1/6
 #+END_SRC
 
-A tangent: I tested this with Racket's ~foldr~, ~foldl~, ~accumulate~, and the definition of ~fold-left~ given in SICP. ~fold-left~ does return 1/6, which I expected. ~foldl~, however, returns 3/2 (as do ~accumulate~ and ~foldr~). Looks like this is a known issue (feature, I suppose) with Racket, and the primary difference between ~foldr~ and ~foldl~ is that ~foldl~ processes the lists in constant space (as opposed to the terms being evaluated in the opposite order). I wonder if that means it evolves an iterative process instead of a recursive process.
+A tangent: I tested this with Racket's ~foldr~, ~foldl~, ~accumulate~, and the
+definition of ~fold-left~ given in SICP. ~fold-left~ does return 1/6, which I
+expected. ~foldl~, however, returns 3/2 (as do ~accumulate~ and ~foldr~). Looks
+like this is a known issue (feature, I suppose) with Racket, and the primary
+difference between ~foldr~ and ~foldl~ is that ~foldl~ processes the lists in
+constant space (as opposed to the terms being evaluated in the opposite order).
+I wonder if that means it evolves an iterative process instead of a recursive
+process.
+
 ** Evaluate ~(fold-right list null (list 1 2 3))~
-This becomes ~(list 1 remainder)~, then ~(list 1 (list 2 remainder))~, then ~(list 1 (list 2 (list 3 remainder)))~, then ~(list 1 (list 2 (list 3 null)))~. Then, moving back up -
+This becomes ~(list 1 remainder)~, then ~(list 1 (list 2 remainder))~, then
+~(list 1 (list 2 (list 3 remainder)))~, then ~(list 1 (list 2 (list 3 null)))~.
+Then, moving back up -
 #+BEGIN_SRC racket -n
 (list 1 (list 2 '(3 ()))) -->
 (list 1 '(2 (3 ()))) -->
@@ -221,13 +281,18 @@ This becomes ~(list 1 remainder)~, then ~(list 1 (list 2 remainder))~, then ~(li
 (list '((() 1) 2) 3) -->
 '(((() 1) 2) 3)
 #+END_SRC
-Compared to the division example, the list example preserves the left- or right- "leaning" structure even after evaluation. In ~fold-left~, the nesting leans to the left, and in ~fold-right~, the nesting leans to the right.
+Compared to the division example, the list example preserves the left- or right-
+"leaning" structure even after evaluation. In ~fold-left~, the nesting leans to
+the left, and in ~fold-right~, the nesting leans to the right.
 
-~fold-left~ and ~fold-right~ will only evaluate the same way if the procedure is commutative, such as addition or multiplication. Neither ~list~ nor ~/~ are commutative; ~(list 1 2)~ is not equivalent to ~(list 2 1)~.
+~fold-left~ and ~fold-right~ will only evaluate the same way if the procedure is
+commutative, such as addition or multiplication. Neither ~list~ nor ~/~ are
+commutative; ~(list 1 2)~ is not equivalent to ~(list 2 1)~.
 * Exercise 2.39
 From the book:
 #+BEGIN_QUOTE
-Complete the following definitions of ~reverse~ terms of ~fold-right~ and ~fold-left~ from exercise 2.38:
+Complete the following definitions of ~reverse~ terms of ~fold-right~ and
+~fold-left~ from exercise 2.38:
 #+BEGIN_SRC racket -n
 (define (reverse sequence)
   (fold-right (lambda (x y) <??>) null sequence))
@@ -235,3 +300,103 @@ Complete the following definitions of ~reverse~ terms of ~fold-right~ and ~fold-
   (fold-left (lambda (x y) <??>) null sequence))
 #+END_SRC
 #+END_QUOTE
+
+Naively, given ~(lambda (x y) <??>)~, I'd try ~(lambda (x y) (cons y x))~-
+building a list, but in the reverse order. This works for ~fold-left~:
+
+#+BEGIN_SRC racket -n
+(define (fold-left op initial sequence)
+  (define (iter result rest)
+    (if (null? rest)
+        result
+        (iter (op result (car rest))
+              (cdr rest))))
+  (iter initial sequence))
+
+(define (reverse sequence)
+  (fold-left (lambda (x y) (cons y x)) null sequence))
+
+(reverse '(1 2 3))
+#+END_SRC
+
+#+BEGIN_SRC racket
+'(3 2 1)
+#+END_SRC
+
+What about for ~fold-right~, also known as ~accumulate~?
+
+#+BEGIN_SRC racket -n
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence)
+          (accumulate op initial (cdr sequence)))))
+
+(define (reverse sequence)
+  (accumulate (lambda (x y) (cons y x)) null sequence))
+
+(reverse '(1 2 3))
+#+END_SRC
+
+#+BEGIN_SRC racket
+'(((() . 3) . 2) . 1)
+#+END_SRC
+
+No good. Let's make sure that the second operand of ~cons~ is a list:
+#+BEGIN_SRC racket -n
+(define (reverse sequence)
+  (accumulate (lambda (x y) (cons y (list x))) null sequence))
+
+(reverse '(1 2 3))
+#+END_SRC
+
+#+BEGIN_SRC racket
+'(((() 3) 2) 1)
+#+END_SRC
+
+A little better... taking a closer look, we are ~cons~-ing the remainder of the
+list, which (hopefully) has already been properly reversed, to ~(list (car
+sequence))~:
+
+#+BEGIN_SRC racket -n
+(cons '(3 2) (list (car sequence)))  ->
+(cons '(3 2) '(1)) ->
+'((3 2) 1)
+#+END_SRC
+
+The issue is, the first operand of ~cons~ should be an atom, not a list. The
+function ~append~ exists for exactly this application - combining two lists into
+one, without any nesting.
+
+#+BEGIN_SRC racket -n
+(define (reverse sequence)
+  (accumulate (lambda (x y) (append y (list x))) null sequence))
+#+END_SRC
+
+* Exercise 2.40
+Here we encapsulate part of ~prime-sum-pairs~ as ~unique-pairs~...
+#+BEGIN_SRC racket -n
+(define (unique-pairs n)
+  (flatmap (lambda (i)
+             (map (lambda (j) (list i j))
+                  (enumerate-interval 1 (- i 1))))
+           (enumerate-interval 1 n)))
+#+END_SRC
+
+Which allows us to rewrite ~prime-sum-pairs~ as:
+#+BEGIN_SRC racket -n
+(define (prime-sum-pairs n)
+  (map make-pair-sum
+       (filter prime-sum?
+               (unique-pairs n))))
+#+END_SRC
+
+The idea here is that we're using nested mappings as an alternative to nested
+loops. Re-watching the lecture, the author claims that functional techniques
+(such as map) are an improvement over imperative techniques (such as loops) for
+the same reason you'd value encapsulation - you give yourself more space to
+think about higher level problems when the details of the implementation are
+hidden. In general, this sounds right to me. In this particular case, though, I
+can't ever see myself reaching for a nested mapping over nested loops -
+specifically, I can't see myself spending less time thinking about the
+implementation of nesting mappings than nested loops.

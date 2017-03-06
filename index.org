@@ -16,6 +16,7 @@
    + Recipes
      + [[file:Recipes/chili][Chili]]
      + [[file:Recipes/freezer-burritos][Freezer Burritos]]
+     + [[file:Recipes/hutzelbrot][Hutzelbrot]]
      + [[file:Recipes/no-work-bread][No Work Bread]]
      + [[file:Recipes/salsa-ranchera][Salsa Ranchera]]
    + SICP
