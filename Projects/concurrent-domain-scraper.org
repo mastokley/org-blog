@@ -1,0 +1,148 @@
+#+OPTIONS: toc:nil
+#+HTML_HEAD: <link href="../css/solarized-dark.css" rel="stylesheet" />
+#+HTML_LINK_HOME: ../index
+#+TITLE: Concurrent Domain Scraper
+2017-11-04
+
+I've rewritten the [[file:toy-domain-scraper.org][toy domain scraper]] project in Clojure. This time it's
+concurrent! No reason each request should block.
+
+For this exercise I'm not interested in learning how to make http requests or
+how to parse the responses. I'm more interested in exploring concurrency
+techniques and mutable data structures.
+
+Let's go ahead and define a mock internet as an adjacency list. That way, we can
+directly access any webpage directly as a top level key (just like the real
+internet).
+
+#+BEGIN_SRC clojure -n
+(def internet
+  {"index"
+   ["recipes/freezer-burritos" "recipes/salsa-ranchera" "hikes/sahale-arm"]
+   "recipes/freezer-burritos"
+   ["recipes/salsa-ranchera" "index"]
+   "recipes/salsa-ranchera"
+   ["index"]
+   "hikes/sahale-arm"
+   ["index"]})
+#+END_SRC
+
+Let's also define a mock http-get function, one that blocks for a variable
+amount of time.
+
+#+BEGIN_SRC clojure -n
+(defn http-get
+  [url internet]
+  (let [milliseconds (+ 4000 (* 4000 (rand)))]
+    (Thread/sleep milliseconds)
+    (get internet url)))
+#+END_SRC
+
+I'm going to stick with breadth-first traversal, where nodes to visit are
+appended to a queue and then processed first in, first out. This time, however,
+I'm going to use a channel as the queue.
+
+Channels are an alternative to callbacks, which are a way to handle asynchrony.
+When you fire off an asynchronous process, you often need a way to access the
+return value of that process. A callback is a function, passed as a parameter to
+the initial asynchronous process, that consumes the return value when it's
+available. It can become difficult to trace out and reason about the
+dependencies of your code when using callbacks - and they can quickly become
+deeply nested.
+
+Channels, on the other hand, offer a sort of home for the return value of an
+asynchronous process - a place where you can find the return value ('message').
+
+#+BEGIN_SRC clojure -n
+(def urls-to-get (chan))
+(def http-responses (chan))
+#+END_SRC
+
+We'll set up two non-blocking processes to continuously wait for messages on
+these channels. When we get a message on the ~urls-to-get~, we'll spin
+off another non-blocking process to go fetch it. When it's finished, it will
+place the results as a message on the ~http-responses~ (to be consumed
+by the other non-blocking process whenever it arrives).
+
+Here's the process that listens for http responses, parses them into urls to
+fetch, and places those urls on the ~urls-to-get~:
+
+#+BEGIN_SRC clojure -n
+(defn render-urls-from-responses
+  [responses urls-to-fetch]
+  ;; `<!` 'takes' a message from a channel
+  (go (loop [response (<! responses)] 
+        (when response
+        ;; `>!` 'puts' a message on a channel
+          (doseq [url response] (>! urls-to-fetch url))
+          (recur (<! responses))))))
+#+END_SRC
+
+As I understand it, ~go~ is an abstraction on top of threads (specifically, on
+top of a thread pool). Since I'm just starting out, I'm not going to delve into
+handling threads explicitly at this time.
+
+The other process will need to refer to a set of visited nodes in order to
+avoid endlessly looping. If this were synchronous, we'd use a vanilla hash
+set. But since we'll have multiple, uncoordinated processes accessing the same
+shared, mutable state, we'll need to use a special, mutable 'reference type'.
+Clojure has a few different reference types - atoms, vars, refs, and agents.
+Luckily, we don't need to look any farther than atoms - a way of endowing a
+given 'identity' with a succession of 'values'.
+
+It took time to evaluate the different reference types and decide which one to
+use, and I made a decision without fully understanding how each type works. I'm
+pretty sure agents are overkill - they're for coordinating mutations across
+multiple identities, atomically (using the same sort of mechanics that a
+relational database might). Vars don't seem to be applicable - they're 'thread
+local' and don't allow changes to be seen across threads (I think). As for
+refs - I don't know what they are. I read and re-read the relevant sections in
+/Clojure for the Brave and True/ and /The Joy of Clojure/, and I just have no
+idea when you'd use them.
+
+Anyway, here's our atom:
+
+#+BEGIN_SRC clojure -n
+(def visited (atom #{}))
+#+END_SRC
+
+In order to read the current value of an atom, we need to 'dereference' it - or
+use the ~@~ macro. In order to mutate it, we need to use ~swap!~. In this way,
+we avoid thinking about, or even understanding, any of the lower level thread
+safety mechanisms you might otherwise require.
+
+If two threads attempt to ~swap!~ the same atom at the same time, one might end
+up retrying. That's fine - adding elements to a set is idempotent.
+
+Here's the process that listens for urls, fetches them asynchronously, and
+places the received responses on the `http-responses` channel.
+
+#+BEGIN_SRC clojure -n
+(defn fetch-urls
+  [urls-to-fetch responses]
+  (go (loop [url (<! urls-to-fetch)]
+        (when url
+          (when (not (contains? @visited url))
+            (go (swap! visited conj url)
+                (>! responses (http-get url internet))))
+          (recur (<! urls-to-fetch))))))
+#+END_SRC
+
+(At this point, I've written ~(loop (when (recur~ twice. I did try
+replacing it with the macro ~while~, but then you miss out on the implicit ~let~
+provided by `loop`. I also played around with `when-some`, a macro for ~(let 
+(if (not (nil?~ but I couldn't seem to combine that with ~recur~.)
+
+Almost there! We need to invoke our two channel watcher functions and kick off
+the process by placing an initial message on the urls channel.
+
+#+BEGIN_SRC clojure -n
+(render-urls-from-responses http-responses urls-to-get)
+(fetch-urls urls-to-get http-responses)
+(>!! urls-to-get "index")
+#+END_SRC
+
+One disadvantage of this approach is that there's no way to determine when we're
+finished and when we should close the channels, shutting down the processes that
+consume their messages. You wouldn't have that problem with callbacks, I don't
+think. Instead, you could close the channels after a set period of time.
