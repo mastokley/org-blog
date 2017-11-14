@@ -4,13 +4,38 @@
 #+TITLE: Toy Domain Scraper
 2016-04-24
 
-Scraping linked pages within a given domain can be thought of as traversing a graph: the links are edges and the individual pages are nodes. For this project, I'm using [[https://en.wikipedia.org/wiki/Breadth-first_search][breadth-first traversal]]. Ideally, the script visits every node, correctly identifying previously visited nodes to avoid infinite loops, and it does so in a reasonable amount of time (whatever that might be). (It's worth noting that in breadth-first traversal, you do not necessarily need to keep track of which nodes have already been visited. In this case, we do, because we have to assume that there will be backwards-pointing links from child nodes. In depth-first traversal, you always keep track because you are constantly climbing back up the tree towards the root.) In that scenario it might not matter what type of traversal you used. If the script does get tangled in a loop, however, or if it can't finish traversing quickly, the breadth-first traversal is going to produce a good set of results right away for a typical website. This is why I've included the ~try...finally~ block in ~scrape()~; in the event that you need to manually end the script, you can still see which nodes were visited.
+Update 2017-11-04: See the concurrent version written in [[file:concurrent-domain-scraper.org][Clojure]].
 
-Building absolute urls out of relative urls turned out to be pretty involved. What I've written covers individual cases I encountered, as generally as possible. It isn't airtight, though, so I left in the print functions for debugging. (There may be a library out there that already does this, maybe something like os.path but for urls.)
+Scraping linked pages within a given domain can be thought of as traversing a
+graph: the links are edges and the individual pages are nodes. For this project,
+I'm using [[https://en.wikipedia.org/wiki/Breadth-first_search][breadth-first traversal]]. Ideally, the script visits every node,
+correctly identifying previously visited nodes to avoid infinite loops, and it
+does so in a reasonable amount of time (whatever that might be). (It's worth
+noting that in breadth-first traversal, you do not necessarily need to keep
+track of which nodes have already been visited. In this case, we do, because we
+have to assume that there will be backwards-pointing links from child nodes. In
+depth-first traversal, you always keep track because you are constantly climbing
+back up the tree towards the root.) In that scenario it might not matter what
+type of traversal you used. If the script does get tangled in a loop, however,
+or if it can't finish traversing quickly, the breadth-first traversal is going
+to produce a good set of results right away for a typical website. This is why
+I've included the ~try...finally~ block in ~scrape()~; in the event that you
+need to manually end the script, you can still see which nodes were visited.
 
-Also: Regex syntax is dense! I wish I knew of a way to make it more expressive. Reading over the expressions a week after writing them, I find myself working quite hard to decipher them.
+Building absolute urls out of relative urls turned out to be pretty involved.
+What I've written covers individual cases I encountered, as generally as
+possible. It isn't airtight, though, so I left in the print functions for
+debugging. (There may be a library out there that already does this, maybe
+something like os.path but for urls.)
 
-Lastly, you'll appreciate that I wrote ~get_links~ as a generator to save space in memory; I'm using a deque to save on ~.pop()~ and ~.appendleft()~; and that I'm using a set to save on testing membership, no matter the number of individual pages.
+Also: Regex syntax is dense! I wish I knew of a way to make it more expressive.
+Reading over the expressions a week after writing them, I find myself working
+quite hard to decipher them.
+
+Lastly, you'll appreciate that I wrote ~get_links~ as a generator to save space
+in memory; I'm using a deque to save on ~.pop()~ and ~.appendleft()~; and that
+I'm using a set to save on testing membership, no matter the number of
+individual pages.
 
 See the code below; project is also on [[https://github.com/mastokley/toy_domain_scraper][github]].[fn:1]
 
@@ -107,15 +132,37 @@ if __name__ == '__main__':
     scrape(*sys.argv[1])
 #+END_SRC
 
-[fn:1] I attempted to rewrite the above using fewer French/latinate words, for fun. Many of the latinate words are technical jargon that can't easily be replaced. (For example: 'traversal', 'generator', 'absolute', 'relative', 'script', 'library' referring to a module, 'pages' referring to webpages, 'code', 'memory'.) The Germans weren't known for their books, I guess.
+[fn:1] I attempted to rewrite the above using fewer French/latinate words, for
+fun. Many of the latinate words are technical jargon that can't easily be
+replaced. (For example: 'traversal', 'generator', 'absolute', 'relative',
+'script', 'library' referring to a module, 'pages' referring to webpages,
+'code', 'memory'.) The Germans weren't known for their books, I guess.
 #+BEGIN_QUOTE
-Scraping linked pages within a given domain can be thought of as walking a graph: the links are edges and the pages are nodes. Here, I'm using [[https://en.wikipedia.org/wiki/Breadth-first_search][breadth-first traversal]]. Ideally, the script visits every node once, skirting already visited nodes to avoid endless loops, and it does so quickly. In that scenario it might not matter how you choose to walk the graph. If the script does get tangled in a loop, however, or if it can't finish walking the graph quickly, breadth-first is going to yield a good set of results right away for a typical website. This is why I've used the ~try...finally~ block in ~scrape()~; in the event that you need to end the script by hand, you can still see which nodes were visited.
+Scraping linked pages within a given domain can be thought of as walking a
+graph: the links are edges and the pages are nodes. Here, I'm using
+[[https://en.wikipedia.org/wiki/Breadth-first_search][breadth-first traversal]]. Ideally, the script visits every node once, skirting
+already visited nodes to avoid endless loops, and it does so quickly. In that
+scenario it might not matter how you choose to walk the graph. If the script
+does get tangled in a loop, however, or if it can't finish walking the graph
+quickly, breadth-first is going to yield a good set of results right away for a
+typical website. This is why I've used the ~try...finally~ block in ~scrape()~;
+in the event that you need to end the script by hand, you can still see which
+nodes were visited.
 
-Building absolute urls out of relative urls ended up being pretty hard. What I've written works for each case I came across, as generally it can. It's brittle, though, so I left in the print functions for debugging. (There may be a library out there that already does this, maybe something like os.path but for urls.)
+Building absolute urls out of relative urls ended up being pretty hard. What
+I've written works for each case I came across, as generally it can. It's
+brittle, though, so I left in the print functions for debugging. (There may be a
+library out there that already does this, maybe something like os.path but for
+urls.)
 
-Also: Regex syntax is... murky. I wish I knew how to make it easier to read. Reading over the expressions a week after writing them, I find them hard to understand.
+Also: Regex syntax is... murky. I wish I knew how to make it easier to read.
+Reading over the expressions a week after writing them, I find them hard to
+understand.
 
-Lastly, you'll like that I wrote ~get_links~ as a generator to save space in memory; I'm using a deque to save on ~.pop()~ and ~.appendleft()~; and that I'm using a set to save on testing membership, no matter how many pages you end up with.
+Lastly, you'll like that I wrote ~get_links~ as a generator to save space in
+memory; I'm using a deque to save on ~.pop()~ and ~.appendleft()~; and that I'm
+using a set to save on testing membership, no matter how many pages you end up
+with.
 
 See the code below; work is also on [[https://github.com/mastokley/toy_domain_scraper][github]].
 #+END_QUOTE

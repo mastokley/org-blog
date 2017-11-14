@@ -4,13 +4,31 @@
 #+TITLE: Twitter Haiku
 2016-06-06
 
-Here's the premise. I'm going to get a handful of tweets for a given hashtag, determine how many syllables there are in each tweet, and produce a haiku poem out of one or more tweets. Best case scenario, the poem is thematically consistent (because each tweet shares a common hashtag) and interesting because of the juxtaposition between individually-authored tweets.
+Here's the premise. I'm going to get a handful of tweets for a given hashtag,
+determine how many syllables there are in each tweet, and produce a haiku poem
+out of one or more tweets. Best case scenario, the poem is thematically
+consistent (because each tweet shares a common hashtag) and interesting because
+of the juxtaposition between individually-authored tweets.
 
-This is a project I started thinking about before the bootcamp. I remember trying to research it and get a basic frame of reference. I ran into two general suggestions. One, people (mostly Twitter, actually) recommended that I learn and use the Twitter API, which would also require registering an account on Twitter, registering that particular app, and authenticating whenever the app interacted with the API. Two, I was made aware of the idea of 'tokenizing' the tweets into words, whose syllables could then be counted.
+This is a project I started thinking about before the bootcamp. I remember
+trying to research it and get a basic frame of reference. I ran into two general
+suggestions. One, people (mostly Twitter, actually) recommended that I learn and
+use the Twitter API, which would also require registering an account on Twitter,
+registering that particular app, and authenticating whenever the app interacted
+with the API. Two, I was made aware of the idea of 'tokenizing' the tweets into
+words, whose syllables could then be counted.
 
-Coming back to the project afterwards, I was not too enthusiastic about the prospect of learning another idiosyncratic API. There are two or maybe three things I want to do that require interacting with Twitter. One, get trending hashtags. Two, get tweets associated with a given hashtag, and three, potentially post the newly-created haiku as a tweet.
+Coming back to the project afterwards, I was not too enthusiastic about the
+prospect of learning another idiosyncratic API. There are two or maybe three
+things I want to do that require interacting with Twitter. One, get trending
+hashtags. Two, get tweets associated with a given hashtag, and three,
+potentially post the newly-created haiku as a tweet.
 
-I'm going to use a 'literate programming' approach. Instead of code with comments here and there explaining the code, you'll see discussion and code interjected as necessary, in the order that it makes sense (from a human perspective). For example, you'll see import statements throughout instead of consolidated at the top of a single script.
+I'm going to use a 'literate programming' approach. Instead of code with
+comments here and there explaining the code, you'll see discussion and code
+interjected as necessary, in the order that it makes sense (from a human
+perspective). For example, you'll see import statements throughout instead of
+consolidated at the top of a single script.
 
 * Getting trends (trending hashtags)
 Now, if you point your browser at http://twitter.com/search-home, and you enable JavaScript, they'll show you the trending hashtags right there. In the picture below, you can see I'm not authenticated:
