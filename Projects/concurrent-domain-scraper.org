@@ -93,7 +93,7 @@ given 'identity' with a succession of 'values'.
 It took time to evaluate the different reference types and decide which one to
 use, and I made a decision without fully understanding how each type works. I'm
 pretty sure agents are overkill - they're for coordinating mutations across
-multiple identities, atomically (using the same sort of mechanics that a
+multiple identities, atomically (making the same kinds of assurances that a
 relational database might). Vars don't seem to be applicable - they're 'thread
 local' and don't allow changes to be seen across threads (I think). As for
 refs - I don't know what they are. I read and re-read the relevant sections in
@@ -115,7 +115,7 @@ If two threads attempt to ~swap!~ the same atom at the same time, one might end
 up retrying. That's fine - adding elements to a set is idempotent.
 
 Here's the process that listens for urls, fetches them asynchronously, and
-places the received responses on the `http-responses` channel.
+places the received responses on the ~http-responses~ channel.
 
 #+BEGIN_SRC clojure -n
 (defn fetch-urls
@@ -130,7 +130,7 @@ places the received responses on the `http-responses` channel.
 
 (At this point, I've written ~(loop (when (recur~ twice. I did try
 replacing it with the macro ~while~, but then you miss out on the implicit ~let~
-provided by `loop`. I also played around with `when-some`, a macro for ~(let 
+provided by ~loop~. I also played around with ~when-some~, a macro for ~(let 
 (if (not (nil?~ but I couldn't seem to combine that with ~recur~.)
 
 Almost there! We need to invoke our two channel watcher functions and kick off
@@ -144,5 +144,5 @@ the process by placing an initial message on the urls channel.
 
 One disadvantage of this approach is that there's no way to determine when we're
 finished and when we should close the channels, shutting down the processes that
-consume their messages. You wouldn't have that problem with callbacks, I don't
-think. Instead, you could close the channels after a set period of time.
+consume their messages. You wouldn't have that problem with callbacks. Instead,
+you could close the channels after a set period of time.
