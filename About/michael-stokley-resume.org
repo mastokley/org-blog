@@ -63,14 +63,12 @@ the larger Django project.
 |         | A full-stack Python web application to gamify household chores and chore management. We manually implemented authorization, authentication, and row-level security. Built in Pyramid with a PostgreSQL database and deployed on Heroku. |
 | 2016.01 | *Weather Forecast*, [[http://michaelstokley.com/Projects/weather-forecast][michaelstokley.com/Projects/weather-forecast]]                                                                                                                                                                        |
 |         | Straightforward front-end JavaScript project to practice DOM manipulation and third-party API consumption.                                                                                                                              |
-| 2015.12 | *HTML Generator*, [[https://michaelstokley.com/Projects/HTML-generator][michaelstokley.com/Projects/HTML-generator]]                                                                                                                                                                            |
-|         | Converts a lightweight, concise markdown into prettified, verbose HTML. Written in JavaScript.                                                                                                                                          |
 
 * Education
 ** Code Fellows, Seattle, WA
 *Certificate*, /2016/ \\
 Advanced Python development, with emphasis on test driven development, pair
-programming, agile methodologies, version control, and basic data structure and
+programming, agile methodologies, version control, and basic data structures and
 algorithms
 ** North Seattle College, Seattle, WA
 *Coursework*, /2012 - 2014/ \\
