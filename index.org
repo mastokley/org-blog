@@ -12,7 +12,6 @@
   - [[file:Projects/nord-entities.org][Nord Entities]]
   - [[file:Projects/toy-domain-scraper.org][Toy Domain Scraper]]
   - [[file:Projects/twitter-haiku.org][Twitter Haiku]]
-  - [[file:Projects/weather-forecast.org][Weather Forecast]]
 - Recipes
   - [[file:Recipes/chili.org][Chili]]
   - [[file:Recipes/freezer-burritos.org][Freezer Burritos]]
