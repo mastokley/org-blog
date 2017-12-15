@@ -75,11 +75,11 @@ month despite a 126% increase in customer accounts over a two year period
 
 * Projects
 #+ATTR_HTML: :border 0 :rules none
-| 2016.10 | *\quot{}Nord Entities\quot{}*, [[file:~/Documents/Blog/org-blog/Projects/nord-entities.org][michaelstokley.com/Projects/nord-entities]]                                                                                                                        |
+| 2016.10 | *\quot{}Nord Entities\quot{}*, [[http://michaelstokley.com/Projects/nord-entities][michaelstokley.com/Projects/nord-entities]]                                                            |
 |         | Literate programming exploration of natural language processing techniques such as tokenizing, chunking, and named entity recognition. Written in Python with Requests, the NLTK, and Beautiful Soup. |
-| 2016.06 | *\quot{}Twitter Haiku\quot{}*, [[file:~/Documents/Blog/org-blog/Projects/twitter-haiku.org][michaelstokley.com/Projects/twitter-haiku]]                                                                                                                 |
+| 2016.06 | *\quot{}Twitter Haiku\quot{}*, [[http://michaelstokley.com/Projects/twitter-haiku][michaelstokley.com/Projects/twitter-haiku]]                                                                                     |
 |         | Literate programming exercise in web scraping, tokenizing, and functional programming techniques learned from the SICP. Written in Python.                                                            |
-| 2016.04 | *Toy Domain Scraper*, [[file:~/Documents/Blog/org-blog/Projects/toy-domain-scraper.org][michaelstokley.com/Projects/toy-domain-scaper]]                                                                                                                                |
+| 2016.04 | *Toy Domain Scraper*, [[http://michaelstokley.com/Projects/toy-domain-scraper][michaelstokley.com/Projects/toy-domain-scaper]]                                                                                               |
 |         | A web scraper built in Python. Uses breadth-first traversal for reliable, fast results.                                                                                                               |
 
 * Education
