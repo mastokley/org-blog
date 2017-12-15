@@ -9,60 +9,78 @@
 
 * Profile
 Software developer. I'm patient enough to take difficult projects seriously, and
-impatient enough to automate tedious, needlessly-manual work. In my previous
+driven enough to automate tedious, needlessly manual work. In my previous
 accounting position, I greatly exceeded expectations by teaching myself SQL and
-relational database theory in order to automate the vast majority of my data
-entry / data quality tasks (and avoid using a cumbersome GUI). Since then, I
-spent two years studying math, computer science, and statistics at North Seattle
-College, attended Code Fellows' Python Development Intensive (taught by esteemed
-pythonista Cris Ewing), and have independently studied the classic textbook /The
-Structure and Interpretation of Computer Programs/. Recently I helped to
-co-found a local big data / nlp startup, and have been working as a freelance
-web developer.
+relational database theory in order to automate data entry / data quality work
+(and avoid using a cumbersome GUI). Since then, I have spent two years studying
+math, computer science, and statistics at North Seattle College, attended Code
+Fellows' Python Development Intensive (taught by esteemed pythonista Cris
+Ewing), and have independently studied the classic textbook /The Structure and
+Interpretation of Computer Programs/. I've been working as a foundational member
+of the engineering team at iDatalabs, building out a customer facing web portal
+with Vue.js, Flask, and PostgreSQL. My goals for 2018: learn more diverse
+languages (e.g. functional, typed, low-level, or systems); learn to handle
+asynchrony without callbacks (e.g. channels found in Go or Clojure); blog about
+design patterns; work through a few more chapters of the SICP.
 
 * Technical Skills
 ** Proficient
-Python, Django, Django REST Framework, Pyramid, Git, SQL, HTML/CSS,
-JavaScript/jQuery, Unix systems, Shell Scripting, Org-mode, Regular Expressions
-
+Python, Django, Flask, PostgreSQL, JavaScript/HTML/CSS, Vue.js, Git, SQL, Unix,
+MVC, HTTP, OOP, FP, Highcharts
 ** Familiar
-AWS Deployment, Heroku Deployment, Ansible, PostgreSQL, Nginx, Gunicorn, Scheme,
-Sed
+Webpack, AWS, Heroku, Ansible, Nginx, Gunicorn, MongoDB, Pyramid, Scheme,
+Clojure
 * Experience
+** iDatalabs, Bellevue, WA
+*** Full Stack Engineer, /2017.01 - 2017.10/
+I owned (built, maintained, and took full responsibility for) a Vue.js single
+page application that displays and sells marketing data; I maintained and
+updated the consumed api (written in Flask) and updated underlying db schema to
+fit api requirements as needed. I worked on all tiers of the architecture, from
+UI to backend, to our Postgres and Mongo databases, to the various Apache and
+Nginx servers deployed across Azure instances.
+  - Designed and implemented a 'store' to manage client-side shared state using
+    Vuex
+  - Optimized perceived page performance, including both frontend and backend
+    optimizations
+  - Knocked up internal admin dashboards in Flask as needed for Sales,
+    Marketing, Analytics
+
 ** Red Mountain Software, Seattle, WA
-*** Freelance Web Developer, /2016.08 - present/
-Ongoing work to design, build, and test internal management application
-according to client specification. App built with Django and PostgreSQL, with
+*** Freelance Web Developer, /2016.08 - 2016.10/
+Designed, built, and tested an internal management application according to
+client specification. Thoughtfully designed and implemented db schema to fit
+domain-specific business objects. App built with Django and PostgreSQL with
 jQuery on the front as needed.
-  - Designed and implemented database schema
-  - Wrote models, views, and templates
-  - Wrote a method to display arbitrary model fields (including reverse
-    relationships) for arbitrary models
+
 ** Sternshus, Seattle, WA
 *** Co-founding Full Stack Developer, /2016.07 - 2016.09/
 Provided front-end solutions in the context of rapidly changing business
 requirements. Worked primarily in Webflow, Django, and MySQL. I am most proud of
 having written sed and python scripts to automate merging of Webflow files into
 the larger Django project.
+
 ** Recology CleanScapes, Seattle, WA
 *** AR Specialist, /2012.04 - 2015.04/
-- Wrote and maintained a library of accurate, sophisticated SQL queries to capture evolving data inconsistencies; these queries eliminated 37.5 labor hours per month despite a 126% increase in customer accounts over a two year period
-- Designed database reports for internal and external customers, such as government officials and senior management
-- Delegated data entry / data revision tasks
-- Collaborated with operations, data quality, payment processing, and customer service teams to analyze and improve processes as new city contracts were won
+Wrote and maintained a library of accurate, sophisticated SQL queries to capture
+evolving data inconsistencies; these queries eliminated 37.5 labor hours per
+month despite a 126% increase in customer accounts over a two year period
+
+# - Wrote and maintained a library of accurate, sophisticated SQL queries to capture evolving data inconsistencies; these queries eliminated 37.5 labor hours per month despite a 126% increase in customer accounts over a two year period
+# - Designed database reports for internal and external customers, such as government officials and senior management
+# - Delegated data entry / data revision tasks
+# - Collaborated with operations, data quality, payment processing, and customer service teams to analyze and improve processes as new city contracts were won
 # - Oversaw and coordinated all billing and collections activities
 # - Closed the month on a deadline
 
 * Projects
 #+ATTR_HTML: :border 0 :rules none
-| 2016.04 | *\quot{}Reciprocity\quot{}*, http://reciprocity.site                                                                                                                                                                                    |
-|         | A full-stack Python web application for recipe sharing and collaboration. Built with Django and PostgreSQL, deployed via Ansible to an AWS EC2 instance. Source code here: [[https://github.com/TeamReciprocity/reciprocity][github.com/TeamReciprocity/reciprocity]].                      |
-| 2016.04 | *Toy Domain Scraper*, [[https://github.com/mastokley/toy_domain_scraper][github.com/mastokley/toy_domain_scraper]]                                                                                                                                                                           |
-|         | A web scraper built in Python. Uses breadth-first traversal for reliable, fast results.                                                                                                                                                 |
-| 2016.03 | *\quot{}HomeQuest\quot{}*, [[https://github.com/homequest/homequest][github.com/homequest/homequest]]                                                                                                                                                                               |
-|         | A full-stack Python web application to gamify household chores and chore management. We manually implemented authorization, authentication, and row-level security. Built in Pyramid with a PostgreSQL database and deployed on Heroku. |
-| 2016.01 | *Weather Forecast*, [[http://michaelstokley.com/Projects/weather-forecast][michaelstokley.com/Projects/weather-forecast]]                                                                                                                                                                        |
-|         | Straightforward front-end JavaScript project to practice DOM manipulation and third-party API consumption.                                                                                                                              |
+| 2016.10 | *\quot{}Nord Entities\quot{}*, [[file:~/Documents/Blog/org-blog/Projects/nord-entities.org][michaelstokley.com/Projects/nord-entities]]                                                                                                                        |
+|         | Literate programming exploration of natural language processing techniques such as tokenizing, chunking, and named entity recognition. Written in Python with Requests, the NLTK, and Beautiful Soup. |
+| 2016.06 | *\quot{}Twitter Haiku\quot{}*, [[file:~/Documents/Blog/org-blog/Projects/twitter-haiku.org][michaelstokley.com/Projects/twitter-haiku]]                                                                                                                 |
+|         | Literate programming exercise in web scraping, tokenizing, and functional programming techniques learned from the SICP. Written in Python.                                                            |
+| 2016.04 | *Toy Domain Scraper*, [[file:~/Documents/Blog/org-blog/Projects/toy-domain-scraper.org][michaelstokley.com/Projects/toy-domain-scaper]]                                                                                                                                |
+|         | A web scraper built in Python. Uses breadth-first traversal for reliable, fast results.                                                                                                               |
 
 * Education
 ** Code Fellows, Seattle, WA
