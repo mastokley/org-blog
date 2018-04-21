@@ -50,8 +50,8 @@ available. It can become difficult to trace out and reason about the
 dependencies of your code when using callbacks - and they can quickly become
 deeply nested.
 
-Channels, on the other hand, offer a sort of home for the return value of an
-asynchronous process - a place where you can find the return value ('message').
+Channels, on the other hand, offer a sort of home for the return value
+('message') of an asynchronous process.
 
 #+BEGIN_SRC clojure -n
 (def urls-to-get (chan))
@@ -59,13 +59,13 @@ asynchronous process - a place where you can find the return value ('message').
 #+END_SRC
 
 We'll set up two non-blocking processes to continuously wait for messages on
-these channels. When we get a message on the ~urls-to-get~, we'll spin
+these channels. When we get a message on the ~urls-to-get~ channel, we'll spin
 off another non-blocking process to go fetch it. When it's finished, it will
-place the results as a message on the ~http-responses~ (to be consumed
+place the results as a message on the ~http-responses~ channel (to be consumed
 by the other non-blocking process whenever it arrives).
 
 Here's the process that listens for http responses, parses them into urls to
-fetch, and places those urls on the ~urls-to-get~:
+fetch, and places those urls on the ~urls-to-get~ channel:
 
 #+BEGIN_SRC clojure -n
 (defn render-urls-from-responses

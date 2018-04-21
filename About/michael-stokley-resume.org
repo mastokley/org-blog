@@ -7,30 +7,15 @@
 | [[mailto:michael@michaelstokley.com][michael@michaelstokley.com]] |   | (303) 801-8575       |   | Seattle, WA               |
 | [[http://michaelstokley.com][michaelstokley.com]]         |   | [[https://github.com/mastokley][github.com/mastokley]] |   | [[https://linkedin.com/in/mastokley][linkedin.com/in/mastokley]] |
 
-* Profile
-Software developer. I'm patient enough to take difficult projects seriously, and
-driven enough to automate tedious, needlessly manual work. In my previous
-accounting position, I greatly exceeded expectations by teaching myself SQL and
-relational database theory in order to automate data entry / data quality work
-(and avoid using a cumbersome GUI). Since then, I have spent two years studying
-math, computer science, and statistics at North Seattle College, attended Code
-Fellows' Python Development Intensive (taught by esteemed pythonista Cris
-Ewing), and have independently studied the classic textbook /The Structure and
-Interpretation of Computer Programs/. I've been working as a foundational member
-of the engineering team at iDatalabs, building out a customer facing web portal
-with Vue.js, Flask, and PostgreSQL. My goals for 2018: learn more diverse
-languages (e.g. functional, typed, low-level, or systems); learn to handle
-asynchrony without callbacks (e.g. channels found in Go or Clojure); blog about
-design patterns; work through a few more chapters of the SICP.
-
 * Technical Skills
 ** Proficient
-Python, Django, Flask, PostgreSQL, JavaScript/HTML/CSS, Vue.js, Git, SQL, Unix,
+Python, Django, Flask, PostgreSQL, JavaScript, React, Node, Vue.js, Git, SQL, Unix,
 MVC, HTTP, OOP, FP, Highcharts
 ** Familiar
-Webpack, AWS, Heroku, Ansible, Nginx, Gunicorn, MongoDB, Pyramid, Scheme,
-Clojure
+Webpack, AWS, Heroku, Ansible, Nginx, Gunicorn, MongoDB, Clojure, Scala
 * Experience
+** Porch, Seattle, WA
+*** Software Engineer 2, /2018.02 - present/
 ** iDatalabs, Bellevue, WA
 *** Full Stack Engineer, /2017.01 - 2017.10/
 I owned (built, maintained, and took full responsibility for) a Vue.js single
