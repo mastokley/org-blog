@@ -60,13 +60,14 @@ month despite a 126% increase in customer accounts over a two year period
 
 * Projects
 #+ATTR_HTML: :border 0 :rules none
-| 2016.10 | *\quot{}Nord Entities\quot{}*, [[http://michaelstokley.com/Projects/nord-entities][michaelstokley.com/Projects/nord-entities]]                                                            |
+| 2017.11 | *\quot{}Concurrent Domain Scraper\quot{}*, [[http://michaelstokley.com/Projects/concurrent-domain-scraper][michaelstokley.com/Projects/concurrent-domain-scraper]]                                    |
+|         | Written in Clojure. Uses mutable data types and channels to manage asynchrony.                                                                                                                        |
+| 2016.10 | *\quot{}Nord Entities\quot{}*, [[http://michaelstokley.com/Projects/nord-entities][michaelstokley.com/Projects/nord-entities]]                                                                        |
 |         | Literate programming exploration of natural language processing techniques such as tokenizing, chunking, and named entity recognition. Written in Python with Requests, the NLTK, and Beautiful Soup. |
-| 2016.06 | *\quot{}Twitter Haiku\quot{}*, [[http://michaelstokley.com/Projects/twitter-haiku][michaelstokley.com/Projects/twitter-haiku]]                                                                                     |
+| 2016.06 | *\quot{}Twitter Haiku\quot{}*, [[http://michaelstokley.com/Projects/twitter-haiku][michaelstokley.com/Projects/twitter-haiku]]                                                                        |
 |         | Literate programming exercise in web scraping, tokenizing, and functional programming techniques learned from the SICP. Written in Python.                                                            |
-| 2016.04 | *Toy Domain Scraper*, [[http://michaelstokley.com/Projects/toy-domain-scraper][michaelstokley.com/Projects/toy-domain-scaper]]                                                                                               |
+| 2016.04 | *Toy Domain Scraper*, [[http://michaelstokley.com/Projects/toy-domain-scraper][michaelstokley.com/Projects/toy-domain-scaper]]                                                                        |
 |         | A web scraper built in Python. Uses breadth-first traversal for reliable, fast results.                                                                                                               |
-
 * Education
 ** Code Fellows, Seattle, WA
 *Certificate*, /2016/ \\
