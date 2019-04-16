@@ -1,4 +1,4 @@
-#+HTML_HEAD: <link href="../../css/solarized-dark.css" rel="stylesheet" />
+#+HTML_HEAD: <link href="../css/solarized-dark.css" rel="stylesheet" />
 #+HTML_LINK_HOME: ../../index.html
 #+TITLE: SICP Section 2.1.4
 2015-07-09
